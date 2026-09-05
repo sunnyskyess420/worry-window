@@ -7,11 +7,13 @@
 <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🪟</text></svg>">
 <style>
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
-body{margin:0 auto;max-width:560px;padding:16px 16px 120px;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;background:radial-gradient(900px 600px at 90% -10%,#ece9ff,rgba(236,233,255,0)),radial-gradient(700px 500px at -10% 100%,#e2f5f0,rgba(226,245,240,0)),#f7f6fb;color:#312e46}
+html,body{margin:0}
+body{margin:0 auto;max-width:560px;padding:16px 16px 130px;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;background:radial-gradient(900px 600px at 90% -10%,#ece9ff,rgba(236,233,255,0)),radial-gradient(700px 500px at -10% 100%,#e2f5f0,rgba(226,245,240,0)),#f7f6fb;color:#312e46}
 .head{display:flex;gap:12px;align-items:center;padding:14px 2px}
 .logo{width:46px;height:46px;border-radius:14px;background:linear-gradient(135deg,#818cf8,#14b8a6);display:flex;align-items:center;justify-content:center;font-size:24px;box-shadow:0 8px 20px rgba(99,102,241,.3)}
-h1{font-size:21px;margin:0}h2{margin:4px 0}h3{margin:0 0 6px}
+h1{font-size:21px;margin:0}h2{margin:6px 0;font-size:20px}h3{margin:0 0 6px}
 .sub{font-size:12px;color:#8a87a0}
+.help{margin-left:auto;border:none;background:#eef0ff;color:#4f46e5;width:36px;height:36px;border-radius:50%;font-weight:700;font-size:17px;cursor:pointer;font-family:inherit;flex:0 0 36px}
 .card{background:#fff;border:1px solid #eceaf4;border-radius:18px;padding:16px;margin:10px 0;box-shadow:0 6px 24px rgba(62,55,130,.06)}
 .btn{border:none;border-radius:13px;padding:12px 16px;font-size:15px;font-weight:600;cursor:pointer;font-family:inherit}
 .primary{background:linear-gradient(135deg,#6366f1,#4f46e5);color:#fff;box-shadow:0 8px 20px rgba(79,70,229,.3)}
@@ -26,10 +28,10 @@ input[type=time]{width:auto}
 .lbls,.filters,.dur{display:flex;flex-wrap:wrap;gap:6px;margin:8px 0}
 .breath{width:180px;height:180px;border-radius:50%;border:none;cursor:pointer;background:radial-gradient(circle at 32% 28%,#a5b4fc,#6366f1 58%,#4f46e5);color:#fff;font-size:19px;font-weight:700;line-height:1.3;box-shadow:0 18px 46px rgba(99,102,241,.38);animation:b 5.5s ease-in-out infinite;font-family:inherit}
 @keyframes b{0%,100%{transform:scale(1)}50%{transform:scale(1.06)}}
-.center{text-align:center;padding:18px 0}
+.center{text-align:center;padding:18px 0 6px}
 .hint{color:#9b98b0;font-size:13px;margin-top:14px}
 .wcard{cursor:pointer}.wcard:active{transform:scale(.985)}
-.wtxt{font-size:15px;line-height:1.45;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.wtxt{font-size:15px;line-height:1.45;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;overflow-wrap:anywhere}
 .wmeta{display:flex;flex-wrap:wrap;gap:6px;align-items:center;margin-top:8px}
 .chip.st{cursor:default}
 .st.active{background:#fff4e0;border-color:#f5e3c0;color:#b45309}
@@ -47,7 +49,7 @@ input[type=time]{width:auto}
 .sheet{background:#fff;width:100%;max-width:560px;border-radius:24px 24px 0 0;padding:10px 20px 30px;max-height:88vh;overflow:auto}
 .handle{width:42px;height:5px;border-radius:99px;background:#e4e2f0;margin:6px auto 10px}
 .eyebrow{text-align:center;color:#9b98b0;font-size:11.5px;letter-spacing:.12em;text-transform:uppercase;font-weight:700;margin:2px 0 8px}
-.quote{background:#f7f6fb;border-left:4px solid #a5b4fc;border-radius:14px;padding:12px 14px;font-size:15.5px;line-height:1.5;margin:6px 0 10px}
+.quote{background:#f7f6fb;border-left:4px solid #a5b4fc;border-radius:14px;padding:12px 14px;font-size:15.5px;line-height:1.5;margin:6px 0 10px;overflow-wrap:anywhere}
 .fld{font-size:12.5px;color:#9b98b0;margin:10px 0 0;font-weight:700}
 .toast{position:fixed;top:16px;left:50%;transform:translateX(-50%);background:#312e46;color:#fff;border-radius:13px;padding:11px 16px;font-size:13.5px;z-index:99;box-shadow:0 12px 30px rgba(35,32,52,.35);max-width:90vw}
 .bar{height:10px;background:#e9e7f5;border-radius:99px;overflow:hidden;margin:10px 0 4px}
@@ -60,9 +62,26 @@ input[type=time]{width:auto}
 .week>div{flex:1;display:flex;flex-direction:column;justify-content:flex-end;align-items:center;gap:3px;height:100%}
 .week i{width:100%;max-width:34px;background:linear-gradient(180deg,#818cf8,#6366f1);border-radius:7px;min-height:3px}
 .week b,.week em{font-size:10.5px;color:#8a87a0;font-style:normal;font-weight:700}
-ol.steps{padding-left:24px;line-height:1.55;font-size:14px}ol.steps li{margin:10px 0}
+.gp{font-size:14.5px;line-height:1.55;color:#514d68;margin:8px 0}
 .tip{background:#fff7e6;border:1px solid #f5e3c0;color:#92400e;border-radius:16px;padding:12px 14px;font-size:13.5px;line-height:1.5;margin:10px 0}
 .swap{background:#ecfdf5;border:1px solid #c6ecdc;color:#065f46;border-radius:14px;padding:12px 14px;margin:10px 0;font-size:14px;line-height:1.5}
+.desc{font-size:12.5px;color:#514d68;line-height:1.5;margin:2px 0 6px}
+.cap{font-size:12px;color:#9b98b0;line-height:1.5;margin-top:8px}
+details.how{margin:12px 0 2px}
+details.how summary{cursor:pointer;color:#4f46e5;font-size:13.5px;font-weight:700;padding:4px 0}
+details.how ul{margin:4px 0 6px;padding-left:20px;font-size:13.5px;color:#514d68;line-height:1.6}
+.guide{position:fixed;inset:0;background:rgba(35,32,52,.55);z-index:100;display:flex;align-items:flex-end;justify-content:center}
+.gcard{background:#fff;width:100%;max-width:480px;border-radius:24px 24px 0 0;padding:24px 22px 26px;max-height:88vh;overflow:auto}
+@media(min-width:600px){.guide{align-items:center;padding:20px}.gcard{border-radius:24px}}
+.gstep{display:flex;gap:10px;margin:0 0 14px}
+.gnum{flex:0 0 26px;height:26px;border-radius:9px;background:#eef0ff;color:#4f46e5;font-weight:700;display:flex;align-items:center;justify-content:center;font-size:13px;margin-top:1px}
+.gstep b{display:block;font-size:14.5px}
+.gstep span{font-size:12.5px;color:#6d6a86;line-height:1.4}
+.trow{display:flex;gap:10px;margin:12px 0;font-size:13.5px;line-height:1.5;color:#514d68}
+.tpill{flex:0 0 auto;background:#eef0ff;color:#4338ca;font-weight:700;border-radius:8px;padding:3px 9px;font-size:12px;height:fit-content}
+.mhead{display:flex;gap:10px;align-items:center}
+.mhead b{font-size:15.5px}
+.mhead .mico{margin-left:auto;font-size:20px}
 </style>
 </head>
 <body>
@@ -73,10 +92,36 @@ const uid=()=>Date.now().toString(36)+Math.random().toString(36).slice(2,7);
 const esc=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const ago=t=>{const s=(Date.now()-t)/1e3;return s<60?'just now':s<3600?Math.floor(s/60)+'m ago':s<86400?Math.floor(s/3600)+'h ago':Math.floor(s/86400)+'d ago'};
 const mmss=s=>String(Math.floor(s/60)).padStart(2,'0')+':'+String(s%60).padStart(2,'0');
+const fmtTime=t=>{if(!t)return'';const p=t.split(':').map(Number);const am=p[0]<12;const hh=p[0]%12===0?12:p[0]%12;return hh+':'+String(p[1]).padStart(2,'0')+' '+(am?'AM':'PM')};
 const pick=a=>a[Math.floor(Math.random()*a.length)];
 
-const LABELS=[['whatif','🌀','What-If'],['cat','🔥','Catastrophizing'],['mind','💭','Mind-Reading'],['always','♾️','Always/Never'],['self','🏷️','Labeling'],['future','🔮','Fortune-Telling']];
+const LABELS=[
+ ['whatif','🌀','What-If',"fear of things that haven't happened yet"],
+ ['cat','🔥','Catastrophizing','the worst case, treated as the only case'],
+ ['mind','💭','Mind-Reading','deciding what other people think, without asking'],
+ ['always','♾️','Always/Never','"this ALWAYS goes wrong" — does it, though?'],
+ ['self','🏷️','Labeling','"I\'m a failure" instead of "I messed up one thing"'],
+ ['future','🔮','Fortune-Telling','predicting the future as if it already happened']
+];
 const SWAPS=[['🚶','a 5-minute walk'],['🫁','4-7-8 breathing, three rounds'],['🎵','one favorite song, really listened to'],['💧','a glass of water, slowly'],['🧩','two minutes of a puzzle game'],['📞','text someone about anything else'],['🌱','water a plant']];
+const G7=[
+ ['🫧','notice the moment your brain starts spinning — awareness is the whole game','Catch the worry loop'],
+ ['🏷️','"I\'m having a what-if thought" — not "I\'m a disaster"','Name the thought, not yourself'],
+ ['⚖️',"feelings aren't facts — what's actually true, for and against?",'Question it with evidence'],
+ ['🌤️','what-ifs are fiction about the future; write the present facts','Trade "what if" for "what is"'],
+ ['👣','five minutes of motion beats an hour of replaying','Take one tiny action'],
+ ['⏰','one set time a day — worries get met once, on purpose, then the window closes','Keep a daily worry window'],
+ ['🔁',"don't just resist the loop — replace it: walk, breathe, music",'Swap rumination for a habit']
+];
+const STEPS=[
+ ['🫧','Catch the worry loop',"Notice the moment your brain starts spinning. You can't change a loop you don't see. Tap the big button on the Catch tab and dump the worry out of your head."],
+ ['🏷️','Name the thought, not yourself','"I\'m having a catastrophizing thought" — not "I\'m a catastrophe." The label creates daylight between you and the loop. Use the pattern chips when you catch a worry.'],
+ ['⚖️','Question it with evidence',"Feelings aren't facts. Put the thought on trial: what genuinely supports it, what goes against it? The Challenge tool walks you through it."],
+ ['🌤️','Trade "what if" for "what is"',"What-ifs are fiction about the future. Write the balanced, present-tense version instead — that's the verdict field."],
+ ['👣','Take one tiny action','A five-minute step beats an hour of replaying. One line of the email. One looked-up fact. Motion shrinks worry.'],
+ ['⏰','Keep a daily worry window',"One set time, once a day. Parked worries get met there on purpose — then the window closes, and so does the topic until tomorrow."],
+ ['🔁','Swap rumination for a habit',"Don't just resist the loop — replace it. After each window the app suggests one small swap: a walk, slow breathing, a song."]
+];
 
 let W;try{W=JSON.parse(localStorage.getItem('worrywindow')||'[]')}catch(e){W=[]}
 let CFG={tab:'log',filter:'all',dur:15,time:'17:30'};
@@ -84,56 +129,111 @@ try{Object.assign(CFG,JSON.parse(localStorage.getItem('wwcfg')||'{}'))}catch(e){
 const save=()=>localStorage.setItem('worrywindow',JSON.stringify(W));
 const saveCfg=()=>localStorage.setItem('wwcfg',JSON.stringify(CFG));
 let UI={capture:false,modal:null,challenge:null};
+let GUIDE={open:!localStorage.getItem('wwguide'),step:1};
 let SES=null,TICK=null;
 
-function toast(m){const d=document.createElement('div');d.className='toast';d.textContent=m;document.body.appendChild(d);setTimeout(()=>d.remove(),3400)}
+function toast(m){const d=document.createElement('div');d.className='toast';d.textContent=m;document.body.appendChild(d);setTimeout(()=>d.remove(),3600)}
 function stBadge(w){return w.status==='parked'?'⏰ parked':w.status==='resolved'?(w.resolution==='released'?'🎈 released':w.resolution==='challenged'?'⚖️ worked':'✅ resolved'):'🫧 open'}
 
 function render(){
   const parked=W.filter(w=>w.status==='parked').length;
-  let h='';
-  if(CFG.tab==='log')h=viewLog();
-  else if(CFG.tab==='window')h=viewWindow();
-  else if(CFG.tab==='stats')h=viewStats();
-  else h=viewMethod();
-  h+='<nav class="tabs">'+[['log','🫧','Catch'],['window','⏰','Window'],['stats','🌤️','Insights'],['method','📖','Method']].map(t=>
+  let h=`<div class="head"><div class="logo">🪟</div><div style="flex:1;min-width:0"><h1>Worry Window</h1><div class="sub">a daily appointment with your worries</div></div><button class="help" onclick="openGuide()" title="How this works">?</button></div>`;
+  if(CFG.tab==='log')h+=viewLog();
+  else if(CFG.tab==='window')h+=viewWindow();
+  else if(CFG.tab==='stats')h+=viewStats();
+  else h+=viewMethod();
+  h+='<nav class="tabs">'+[['log','🫧','Catch'],['window','⏰','Window'],['stats','🌤️','Patterns'],['method','📖','Guide']].map(t=>
     `<button class="tab ${CFG.tab===t[0]?'on':''}" onclick="go('${t[0]}')"><span>${t[2]}${t[0]==='window'&&parked?`<i class="bdg">${parked}</i>`:''}</span><b>${t[1]}</b></button>`).join('')+'</nav>';
-  if(UI.modal)h+=sheetWorry();
   if(UI.challenge)h+=sheetChallenge();
+  else if(UI.modal)h+=sheetWorry();
+  if(GUIDE.open)h+=viewGuide();
   $('app').innerHTML=h;
 }
 function go(t){CFG.tab=t;saveCfg();render()}
+function openGuide(){GUIDE.open=true;GUIDE.step=1;render()}
+function gStep(n){GUIDE.step=n;render()}
+function gDone(){localStorage.setItem('wwguide','1');GUIDE.open=false;render()}
+
+function viewGuide(){
+  if(GUIDE.step===1){
+    return `<div class="guide" onclick="if(event.target===this)gDone()"><div class="gcard">
+    <div style="text-align:center;font-size:46px">🪟</div>
+    <h2 style="text-align:center;margin:8px 0 2px">A trainer for an overthinking brain</h2>
+    <p class="gp">The honest truth: you can't win an argument with a worry <i>while you're inside the spiral.</i> So this app doesn't try. Instead, four moves:</p>
+    <p class="gp"><b>1 ·</b> Catch the worry the moment it starts 🫧<br><b>2 ·</b> Name the pattern — it's the loop, not you 🏷️<br><b>3 ·</b> Park it for one daily appointment ⏰<br><b>4 ·</b> Meet it there, work it, close the window 🌙</p>
+    <p class="gp">It's built on a 7-step method from CBT — the kind of exercise therapists actually hand out.</p>
+    <div class="row" style="justify-content:center"><button class="btn primary" onclick="gStep(2)">Show me the 7 steps →</button></div>
+    <button class="btn ghost" style="width:100%;margin-top:6px" onclick="gDone()">skip — I'll poke around myself</button>
+    </div></div>`;
+  }
+  if(GUIDE.step===2){
+    return `<div class="guide" onclick="if(event.target===this)gDone()"><div class="gcard">
+    <h2 style="text-align:center">The 7 steps</h2>`+
+    G7.map((s,i)=>`<div class="gstep"><span class="gnum">${i+1}</span><div><b>${s[0]} ${s[2]}</b><span>${s[1]}</span></div></div>`).join('')+
+    `<div class="row" style="justify-content:center;margin-top:6px"><button class="btn primary" onclick="gStep(3)">What does a normal day look like? →</button></div>
+    <button class="btn ghost" style="width:100%;margin-top:6px" onclick="gDone()">skip</button>
+    </div></div>`;
+  }
+  return `<div class="guide" onclick="if(event.target===this)gDone()"><div class="gcard">
+  <h2 style="text-align:center">Your day, with the app</h2>
+  <div class="trow"><span class="tpill">2:00pm</span><span>A worry starts spinning. You open the app, tap <b>Catch</b>, dump it out of your head, tap <b>Park</b>. Ten seconds.</span></div>
+  <div class="trow"><span class="tpill">2:05pm</span><span>You get back to your day. The worry is <b>scheduled, not suppressed</b> — your brain can stop rehearsing it.</span></div>
+  <div class="trow"><span class="tpill">5:30pm</span><span>Your window opens. Parked worries, one at a time. Most already feel lighter — release them with a tap 🎈.</span></div>
+  <div class="trow"><span class="tpill">5:40pm</span><span>The heavy ones get worked: evidence for, evidence against, what's actually <i>true</i>, one tiny next step.</span></div>
+  <div class="trow"><span class="tpill">5:45pm</span><span>Window closed. Done for the day. Whatever's left stays parked for tomorrow.</span></div>
+  <div class="row" style="justify-content:center;margin-top:10px"><button class="btn primary" onclick="gDone()">Okay — let me try it</button></div>
+  </div></div>`;
+}
 
 function viewLog(){
-  let h=`<div class="head"><div class="logo">🪟</div><div><h1>Worry Window</h1><div class="sub">catch it · park it · meet it once a day</div></div></div>`;
-  if(!W.length)h+=`<div class="tip"><b>Three moves, two minutes:</b> catch the loop the moment it starts 🫧 → name the pattern 🏷️ (it's the loop, not you) → park it for your daily window ⏰.</div>`;
+  let h='';
+  if(!W.length){
+    h+=`<div class="card"><h3>👋 New here?</h3><p class="gp" style="margin:4px 0 0">This app trains an overthinking brain using a 7-step CBT method. The short version: catch worries as they start, <b>park</b> them for one daily appointment, then meet them, work them, and close the window.</p><div class="row"><button class="btn soft" onclick="openGuide()">📖 How it works</button><button class="btn ghost" onclick="loadExample()">👀 Load an example</button></div></div>`;
+  }
   if(UI.capture){
-    h+=`<div class="card"><textarea id="wtext" rows="3" autofocus placeholder="What's spinning? Get it out of your head and onto the page…"></textarea>
-    <div class="fld">Name the pattern — optional</div>
-    <div class="lbls">`+LABELS.map(l=>`<button class="chip" data-l="${l[0]}" onclick="this.classList.toggle('on')">${l[1]} ${l[2]}</button>`).join('')+`</div>
-    <div class="row"><button class="btn primary" onclick="saveWorry(1)">⏰ Park it</button><button class="btn soft" onclick="saveWorry(0)">Just log it</button><button class="btn ghost" onclick="UI.capture=false;render()">cancel</button></div></div>`;
+    h+=`<div class="card"><textarea id="wtext" rows="3" autofocus placeholder="Write the sentence that's actually looping in your head. It doesn't have to be neat — getting it out is the point."></textarea>
+    <div class="fld">Does it fit a pattern? (optional)</div>
+    <div class="lbls">`+LABELS.map(l=>`<button class="chip" data-l="${l[0]}" onclick="tglNew(this)">${l[1]} ${l[2]}</button>`).join('')+`</div>
+    <div class="desc" id="lbldesc"><span style="color:#b0adbf">tap any that fit — what it means appears here</span></div>
+    <div class="row"><button class="btn primary" onclick="saveWorry(1)">⏰ Park it</button><button class="btn soft" onclick="saveWorry(0)">Just note it</button><button class="btn ghost" onclick="UI.capture=false;render()">cancel</button></div>
+    <div class="cap">Parking means <b>"we'll deal with this at ${fmtTime(CFG.time)} — not now."</b> A worry with an appointment loses most of its grip. That's the method, not a gimmick.</div>
+    </div>`;
   }else{
-    h+=`<div class="center"><button class="breath" onclick="UI.capture=true;render()">Catch a<br>worry</button><div class="hint">tap the moment you catch yourself looping</div></div>`;
+    h+=`<div class="center"><button class="breath" onclick="UI.capture=true;render()">Catch a<br>worry</button><div class="hint">tap the moment you notice yourself looping</div></div>`;
   }
   const f=CFG.filter;
   const cnt=s=>s==='all'?W.length:s==='open'?W.filter(w=>w.status!=='resolved').length:W.filter(w=>w.status===s).length;
   h+='<div class="filters">'+[['all','All'],['open','Open'],['parked','⏰ Parked'],['resolved','✅ Resolved']].map(x=>
     `<button class="chip ${f===x[0]?'on':''}" onclick="CFG.filter='${x[0]}';saveCfg();render()">${x[1]}${cnt(x[0])?' '+cnt(x[0]):''}</button>`).join('')+'</div>';
   const list=W.filter(w=>f==='all'||(f==='open'?w.status!=='resolved':w.status===f));
-  if(!list.length)h+=`<div class="card empty">${W.length?'Nothing in this bucket right now ✓':'Nothing yet. That breathing button up there is your whole practice.'}</div>`;
+  if(!list.length)h+=`<div class="card empty">${W.length?'Nothing in this bucket right now ✓':'Your list is empty — for now, that\'s the goal.'}</div>`;
   list.forEach(w=>{
     h+=`<div class="card wcard" onclick="UI.modal='${w.id}';render()"><div class="wtxt">${esc(w.text)}</div><div class="wmeta"><span class="chip st ${w.status}">${stBadge(w)}</span>${(w.labels||[]).slice(0,3).map(l=>{const L=LABELS.find(x=>x[0]===l);return L?`<span class="chip st lb">${L[1]} ${L[2]}</span>`:''}).join('')}<span class="tm">${ago(w.created)}</span></div></div>`;
   });
   return h;
 }
 
+function tglNew(el){
+  el.classList.toggle('on');
+  const sel=[...document.querySelectorAll('.lbls .chip.on')].map(c=>c.dataset.l);
+  $('lbldesc').innerHTML=sel.length
+    ?sel.map(id=>{const L=LABELS.find(x=>x[0]===id);return `<div><b>${L[1]} ${L[2]}</b> — ${L[3]}</div>`}).join('')
+    :'<span style="color:#b0adbf">tap any that fit — what it means appears here</span>';
+}
 function saveWorry(park){
   const t=$('wtext')?$('wtext').value.trim():'';
   if(!t)return;
   const labels=[...document.querySelectorAll('.lbls .chip.on')].map(c=>c.dataset.l);
-  W.unshift({id:uid(),text:t,labels:labels,status:park?'parked':'active',resolution:null,created:Date.now()});
+  W.unshift({id:uid(),text:t,labels,status:park?'parked':'active',resolution:null,created:Date.now()});
   save();UI.capture=false;render();
-  toast(park?'Parked ⏰ meanwhile: '+pick(SWAPS)[0]+' '+pick(SWAPS)[1]:'Caught it ✓');
+  if(park){const s=pick(SWAPS);toast('Parked for '+fmtTime(CFG.time)+' ⏰ Meanwhile: '+s[0]+' '+s[1])}
+  else toast('Noted ✓ it\'s on your list');
+}
+function loadExample(){
+  const ex={id:uid(),text:"What if I mess up the presentation on Monday and everyone decides I'm incompetent?",labels:['whatif','mind'],status:'resolved',resolution:'challenged',created:Date.now()-36e5,
+  ch:{for:"I felt shaky and rushed at the last one.",against:"The last three presentations went fine. Feedback was 'clear and confident.' My manager picked me to present — twice.",is:"I'll probably feel nervous Monday, like I always do — and like always, I'll almost certainly be fine. Nerves aren't failure.",next:"Run the first two slides out loud once on Sunday. Five minutes."}};
+  W.unshift(ex);save();UI.modal=ex.id;render();
+  toast('Example loaded — this is a fully worked worry. Tap around.');
 }
 
 function sheetWorry(){
@@ -144,9 +244,10 @@ function sheetWorry(){
   <div class="quote">${esc(w.text)}</div>
   <div class="fld">Name the pattern — it's the loop, not you</div>
   <div class="lbls">`+LABELS.map(l=>`<button class="chip ${labels.includes(l[0])?'on':''}" onclick="tglLbl('${w.id}','${l[0]}')">${l[1]} ${l[2]}</button>`).join('')+`</div>
-  <div class="row"><button class="btn soft" onclick="park('${w.id}')">${w.status==='parked'?'Unpark':'⏰ Park it'}</button><button class="btn primary" onclick="UI.challenge='${w.id}';UI.modal=null;render()">⚖️ Challenge it</button></div>
-  ${w.status!=='resolved'?`<div class="row"><button class="btn ghost" onclick="resolve('${w.id}','manual')">mark resolved ✅</button></div>`:''}
-  ${w.ch?`<div class="swap"><b>⚖️ Verdict:</b> ${esc(w.ch.is||'—')}<br>${w.ch.next?'<b>👣 Next:</b> '+esc(w.ch.next):''}</div>`:''}
+  ${labels.length?`<div class="desc">`+labels.map(id=>{const L=LABELS.find(x=>x[0]===id);return L?`<div><b>${L[1]} ${L[2]}</b> — ${L[3]}</div>`:''}).join('')+`</div>`:''}
+  <div class="row"><button class="btn soft" onclick="park('${w.id}')">${w.status==='parked'?'Unpark it':'⏰ Park it for my window'}</button><button class="btn primary" onclick="UI.challenge='${w.id}';UI.modal=null;render()">⚖️ Challenge it</button></div>
+  ${w.status!=='resolved'?`<div class="row"><button class="btn ghost" onclick="resolve('${w.id}','manual')">mark it resolved ✅</button></div>`:''}
+  ${w.ch?`<div class="swap"><b>⚖️ Verdict — what's actually true:</b> ${esc(w.ch.is||'—')}${w.ch.next?'<br><b>👣 Tiny next step:</b> '+esc(w.ch.next):''}</div>`:''}
   <div class="row" style="justify-content:center"><button class="btn ghost" onclick="del('${w.id}')">delete</button></div>
   </div></div>`;
 }
@@ -162,10 +263,11 @@ function sheetChallenge(){
   return `<div class="ov" onclick="if(event.target===this)closeSheet()"><div class="sheet">
   <div class="handle"></div><div class="eyebrow">⚖️ thought court</div>
   <div class="quote">${esc(w.text)}</div>
-  <div class="fld">Evidence FOR (facts only)</div><textarea id="cf" rows="2">${esc(c.for)}</textarea>
-  <div class="fld">Evidence AGAINST</div><textarea id="ca" rows="2">${esc(c.against)}</textarea>
-  <div class="fld">🌤️ What IS true (the balanced version)</div><textarea id="ci" rows="2">${esc(c.is)}</textarea>
-  <div class="fld">👣 One tiny next step (5 min max)</div><input id="cn" value="${esc(c.next)}" placeholder="draft one line… look up one fact…">
+  <p class="gp" style="margin:4px 0">Put it on trial. Feelings aren't evidence — write down what's actually <i>true</i>.</p>
+  <div class="fld">Evidence FOR (facts only)</div><textarea id="cf" rows="2" placeholder="what genuinely supports this worry?">${esc(c.for)}</textarea>
+  <div class="fld">Evidence AGAINST</div><textarea id="ca" rows="2" placeholder="has it come true before? what actually happened? what would you tell a friend?">${esc(c.against)}</textarea>
+  <div class="fld">🌤️ What IS true — the balanced version</div><textarea id="ci" rows="2" placeholder="not positive spin, just accurate — trade the what-ifs for what is">${esc(c.is)}</textarea>
+  <div class="fld">👣 One tiny next step (5 minutes max)</div><input id="cn" value="${esc(c.next)}" placeholder="one line of the email… one looked-up fact…">
   <div class="row"><button class="btn primary" onclick="saveCh('${w.id}')">Save verdict ✓</button><button class="btn ghost" onclick="closeSheet()">close</button></div>
   </div></div>`;
 }
@@ -175,8 +277,8 @@ function saveCh(id){
   const wasWin=SES&&SES.running;
   w.status='resolved';w.resolution='challenged';save();
   UI.challenge=null;UI.modal=null;
-  if(wasWin){SES.stats.work++;advance()}
-  render();toast('Verdict saved — worry resolved ⚖️✅');
+  if(wasWin){SES.stats.work++;advance()}else render();
+  toast('Verdict saved — worry resolved ⚖️✅');
 }
 
 function viewWindow(){
@@ -186,32 +288,40 @@ function viewWindow(){
     return `<div class="card"><div style="text-align:center;font-size:44px">🌙</div><h2 style="text-align:center;margin:4px 0">Window closed</h2>
     <p class="center" style="color:#8a87a0">${d.reason==='time'?'Time is up — that boundary is the whole point.':d.reason==='done'?'You got through the entire queue.':'You closed it early — that\'s allowed.'}</p>
     <div class="stat"><div><b>${d.rel}</b><span>🎈 released</span></div><div><b>${d.work}</b><span>⚖️ worked</span></div><div><b>${d.keep}</b><span>⏳ parked</span></div></div>
-    ${d.keep?'<p style="text-align:center;color:#8a87a0;font-size:13.5px">The rest stays parked for tomorrow. Deferring <i>is</i> the method.</p>':''}
-    <div class="swap"><b>Swap the leftover rumination for:</b><br>${d.swap[0]} ${d.swap[1]}</div>
+    ${d.keep?'<p style="text-align:center;color:#8a87a0;font-size:13.5px">The rest stays parked for tomorrow. Deferring <i>is</i> the method — not failure.</p>':''}
+    <div class="swap"><b>Swap the leftover rumination for:</b> ${d.swap[0]} ${d.swap[1]}</div>
     <button class="btn primary" style="width:100%" onclick="SES=null;render()">Done</button></div>`;
   }
   if(SES&&SES.running){
     const w=SES.queue[SES.idx];
     return `<div class="card"><div class="timer" id="tleft">${mmss(Math.max(0,Math.round((SES.endsAt-Date.now())/1e3)))}</div>
     <div class="bar"><i id="tbar" style="width:100%"></i></div>
-    <p class="center" style="color:#8a87a0;font-size:13px">${SES.idx+1} of ${SES.queue.length} · bounded time, on purpose</p>
+    <p class="center" style="color:#8a87a0;font-size:13px">${SES.idx+1} of ${SES.queue.length} · one at a time — the timer holds the boundary</p>
     ${w?`<div class="quote">${esc(w.text)}</div>
-    <div class="row"><button class="btn green" onclick="release('${w.id}')">🎈 It's lighter now</button><button class="btn primary" onclick="UI.challenge='${w.id}';render()">⚖️ Still heavy — work it</button></div>
-    <div class="row"><button class="btn ghost" onclick="keep()">⏭ Not today — keep it parked</button></div>`:''}
+    <div class="row"><button class="btn green" onclick="release('${w.id}')">🎈 It's lighter now — release it</button><button class="btn primary" onclick="UI.challenge='${w.id}';render()">⚖️ Still heavy — work it through</button></div>
+    <div class="row"><button class="btn ghost" onclick="keep()">⏭ keep it parked for tomorrow</button></div>`:''}
     <div class="row" style="justify-content:center"><button class="btn ghost" onclick="finish('early')">close window early</button></div></div>`;
   }
   return `<div class="card"><h2>The Worry Window</h2>
-  <p style="color:#514d68;font-size:14.5px">Worries get <b>parked</b> through the day — not suppressed, just scheduled. Once a day you open the window, meet them on purpose, and close it. Most arrive already lighter.</p>
+  <p class="gp" style="margin:6px 0 0">The heart of the method: <b>one set time per day</b> when you meet your parked worries on purpose. Bounded time is what makes it work — the window closes whether you're finished or not.</p>
+  <details class="how"><summary>How the window works</summary>
+  <ul>
+  <li>During the day, worries get <b>parked</b> here — tap "⏰ Park it" when you catch one.</li>
+  <li>At your set time, open the window and take them one by one.</li>
+  <li>Most arrive already lighter — release them 🎈.</li>
+  <li>The heavy ones get worked through with the evidence tool ⚖️.</li>
+  <li>Time's up = window closes. Anything left stays parked for tomorrow.</li>
+  </ul></details>
   <div class="fld">Daily time <input type="time" value="${CFG.time}" onchange="CFG.time=this.value;saveCfg()"></div>
   <div class="fld">Length</div><div class="dur">${[5,10,15,20,30].map(d=>`<button class="chip ${CFG.dur===d?'on':''}" onclick="CFG.dur=${d};saveCfg();render()">${d}m</button>`).join('')}</div>
-  <p style="color:#9b98b0;font-size:12.5px">Tip: set a daily phone alarm at your window time until the habit sticks.</p>
-  <button class="btn primary" style="width:100%" onclick="startWin()">${parked.length?'Open today\'s window · '+parked.length+' parked':'Open a window'}</button>
-  ${parked.length?'':'<p class="center" style="color:#8a87a0;font-size:13px;margin-top:10px">Nothing parked yet. Hit "⏰ Park it" when a worry won\'t leave.</p>'}</div>`;
+  <p class="cap">Tip: set a daily phone alarm at ${fmtTime(CFG.time)} until the habit sticks.</p>
+  <button class="btn primary" style="width:100%;margin-top:10px" onclick="startWin()">${parked.length?'Open today\'s window · '+parked.length+' parked':'Open a window'}</button>
+  ${parked.length?'':'<p class="center" style="color:#8a87a0;font-size:13px;margin-top:10px">Nothing parked yet. Park worries through the day and they\'ll be waiting here.</p>'}</div>`;
 }
 
 function startWin(){
   const parked=W.filter(w=>w.status==='parked');
-  if(!parked.length){toast('Nothing parked yet — park worries as they show up');return}
+  if(!parked.length){toast('Nothing parked yet — catch a worry first and tap "Park it"');return}
   SES={queue:parked.slice(),idx:0,total:CFG.dur*60,endsAt:Date.now()+CFG.dur*60000,stats:{rel:0,work:0,keep:0},running:true,done:null};
   render();startTick();
 }
@@ -228,7 +338,7 @@ function startTick(){
 function release(id){const w=W.find(x=>x.id===id);if(w){w.status='resolved';w.resolution='released';save()}SES.stats.rel++;advance()}
 function keep(){SES.stats.keep++;advance()}
 function advance(){if(!SES)return;SES.idx++;if(SES.idx>=SES.queue.length)finish('done');else render()}
-function finish(reason){if(!SES)return;SES.running=false;SES.done={rel:SES.stats.rel,work:SES.stats.work,keep:SES.stats.keep,total:SES.queue.length,reason,swap:pick(SWAPS)};clearInterval(TICK);render()}
+function finish(reason){if(!SES)return;SES.running=false;clearInterval(TICK);SES.done={rel:SES.stats.rel,work:SES.stats.work,keep:SES.stats.keep,reason,swap:pick(SWAPS)};render()}
 
 function viewStats(){
   const total=W.length,resolved=W.filter(w=>w.status==='resolved').length,released=W.filter(w=>w.status==='resolved'&&w.resolution==='released').length,parked=W.filter(w=>w.status==='parked').length;
@@ -237,23 +347,19 @@ function viewStats(){
   const max=Math.max(1,...counts);
   const lc={};W.forEach(w=>(w.labels||[]).forEach(l=>lc[l]=(lc[l]||0)+1));
   const top=Object.entries(lc).sort((a,b)=>b[1]-a[1]).slice(0,3);
-  let h=`<div class="stat"><div><b>${total}</b><span>worries caught</span></div><div><b>${resolved}</b><span>resolved</span></div><div><b>${parked}</b><span>parked now</span></div></div>`;
-  if(released)h+=`<div class="tip">🎈 ${released} ${released===1?'worry lost':'worries lost'} its sting inside the window — no effort, just time. That's the method working.</div>`;
+  let h=`<div class="card"><h3>🌤️ Your patterns</h3><p class="gp" style="margin:0">Over time this shows the loops your brain runs on repeat. That matters because <b>step 1 of the method is seeing the pattern</b> — you can't change a loop you don't notice.</p></div>`;
+  h+=`<div class="stat"><div><b>${total}</b><span>worries caught</span></div><div><b>${resolved}</b><span>resolved</span></div><div><b>${parked}</b><span>parked now</span></div></div>`;
+  if(released)h+=`<div class="tip">🎈 ${released} ${released===1?'worry lost its sting':'worries lost their sting'} inside the window — no effort, just time. That's the method working.</div>`;
   h+=`<div class="card"><h3>This week</h3><div class="week">`+counts.map((c,i)=>`<div><em>${c||''}</em><i style="height:${(c/max)*100}%"></i><b>${'SMTWTFS'[days[i].getDay()]}</b></div>`).join('')+`</div></div>`;
-  h+=`<div class="card"><h3>Your top loops</h3>`+(top.length?`<div class="lbls">`+top.map(([l,n])=>{const L=LABELS.find(x=>x[0]===l);return L?`<span class="chip" style="background:#4f46e5;color:#fff;border-color:#4f46e5;cursor:default">${L[1]} ${L[2]} ×${n}</span>`:''}).join('')+`</div>`:`<p style="color:#8a87a0;font-size:14px">Label a few worries and your patterns will surface here.</p>`)+`<p style="color:#9b98b0;font-size:12.5px;margin-top:8px">Seeing the pattern is step 1 — awareness before change.</p></div>`;
+  h+=`<div class="card"><h3>Your top loops</h3>`+(top.length?`<div class="lbls">`+top.map(([l,n])=>{const L=LABELS.find(x=>x[0]===l);return L?`<span class="chip" style="background:#4f46e5;color:#fff;border-color:#4f46e5;cursor:default">${L[1]} ${L[2]} ×${n}</span>`:''}).join('')+`</div>`:`<p class="gp" style="margin:0">Label a few worries when you catch them, and your patterns will surface here.</p>`)+`</div>`;
   return h;
 }
 
 function viewMethod(){
-  return `<div class="card"><h2>The method</h2><ol class="steps">
-  <li><b>🫧 Catch the worry loop.</b> Notice the moment the spin starts. Awareness is the whole game.</li>
-  <li><b>🏷️ Label the thought, not yourself.</b> "I'm having a catastrophizing thought" — not "I'm a disaster."</li>
-  <li><b>⚖️ Challenge it with evidence.</b> Feelings aren't facts. Put the thought on trial.</li>
-  <li><b>🌤️ Trade "what if" for "what is."</b> What-ifs are fiction; write down what's actually true.</li>
-  <li><b>👣 Take one tiny action.</b> Five minutes. A draft, a question, a lookup. Motion beats rumination.</li>
-  <li><b>⏰ Keep a daily worry window.</b> Park worries all day; meet them once, on purpose, then close the window.</li>
-  <li><b>🔁 Swap rumination for a habit.</b> Walk, breathe, song, water. Replace — don't just resist.</li>
-  </ol></div>`;
+  let h=`<div class="card"><h3>The 7-step method</h3><p class="gp" style="margin:0">Based on the CBT guide <i>"How to Train Your Brain Out of Worry."</i> Every feature in this app exists to make one of these steps automatic.</p></div>`;
+  STEPS.forEach((s,i)=>{h+=`<div class="card"><div class="mhead"><span class="gnum">${i+1}</span><b>${s[1]}</b><span class="mico">${s[0]}</span></div><p class="gp" style="margin:8px 0 0">${s[2]}</p></div>`});
+  h+=`<div class="center" style="margin-top:14px"><button class="btn ghost" onclick="openGuide()">▶ replay the intro walkthrough</button></div>`;
+  return h;
 }
 
 render();
