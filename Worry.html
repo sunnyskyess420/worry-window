@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Worry Window</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🪟</text></svg>">
+<style>
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+body{margin:0 auto;max-width:560px;padding:16px 16px 120px;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;background:radial-gradient(900px 600px at 90% -10%,#ece9ff,rgba(236,233,255,0)),radial-gradient(700px 500px at -10% 100%,#e2f5f0,rgba(226,245,240,0)),#f7f6fb;color:#312e46}
+.head{display:flex;gap:12px;align-items:center;padding:14px 2px}
+.logo{width:46px;height:46px;border-radius:14px;background:linear-gradient(135deg,#818cf8,#14b8a6);display:flex;align-items:center;justify-content:center;font-size:24px;box-shadow:0 8px 20px rgba(99,102,241,.3)}
+h1{font-size:21px;margin:0}h2{margin:4px 0}h3{margin:0 0 6px}
+.sub{font-size:12px;color:#8a87a0}
+.card{background:#fff;border:1px solid #eceaf4;border-radius:18px;padding:16px;margin:10px 0;box-shadow:0 6px 24px rgba(62,55,130,.06)}
+.btn{border:none;border-radius:13px;padding:12px 16px;font-size:15px;font-weight:600;cursor:pointer;font-family:inherit}
+.primary{background:linear-gradient(135deg,#6366f1,#4f46e5);color:#fff;box-shadow:0 8px 20px rgba(79,70,229,.3)}
+.green{background:linear-gradient(135deg,#10b981,#059669);color:#fff}
+.soft{background:#eef0ff;color:#4338ca}
+.ghost{background:none;color:#8a87a0}
+.row{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}
+textarea,input{width:100%;border:1.5px solid #e4e2f0;border-radius:12px;padding:12px;font:inherit;font-size:15px;background:#fbfaff;margin:6px 0;resize:vertical;color:#312e46}
+input[type=time]{width:auto}
+.chip{border:1px solid #e4e2f0;background:#fff;border-radius:99px;padding:6px 12px;font-size:12.5px;cursor:pointer;color:#5d5a75;font-family:inherit}
+.chip.on{background:#4f46e5;border-color:#4f46e5;color:#fff}
+.lbls,.filters,.dur{display:flex;flex-wrap:wrap;gap:6px;margin:8px 0}
+.breath{width:180px;height:180px;border-radius:50%;border:none;cursor:pointer;background:radial-gradient(circle at 32% 28%,#a5b4fc,#6366f1 58%,#4f46e5);color:#fff;font-size:19px;font-weight:700;line-height:1.3;box-shadow:0 18px 46px rgba(99,102,241,.38);animation:b 5.5s ease-in-out infinite;font-family:inherit}
+@keyframes b{0%,100%{transform:scale(1)}50%{transform:scale(1.06)}}
+.center{text-align:center;padding:18px 0}
+.hint{color:#9b98b0;font-size:13px;margin-top:14px}
+.wcard{cursor:pointer}.wcard:active{transform:scale(.985)}
+.wtxt{font-size:15px;line-height:1.45;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.wmeta{display:flex;flex-wrap:wrap;gap:6px;align-items:center;margin-top:8px}
+.chip.st{cursor:default}
+.st.active{background:#fff4e0;border-color:#f5e3c0;color:#b45309}
+.st.parked{background:#eef0ff;border-color:#dbe0ff;color:#4338ca}
+.st.resolved{background:#e8f8f2;border-color:#c6ecdc;color:#047857}
+.st.lb{background:#f7f6fb;color:#5d5a75}
+.tm{margin-left:auto;color:#b0adbf;font-size:11.5px}
+.empty{text-align:center;color:#8a87a0;font-size:14px}
+.tabs{position:fixed;bottom:12px;left:50%;transform:translateX(-50%);display:flex;gap:2px;background:rgba(255,255,255,.92);backdrop-filter:blur(12px);border:1px solid #eceaf4;border-radius:20px;padding:6px;box-shadow:0 14px 40px rgba(62,55,130,.18);z-index:40}
+.tab{border:none;background:none;border-radius:14px;padding:8px 13px;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:1px;min-width:62px;color:#8a87a0;font-family:inherit}
+.tab.on{background:#4f46e5;color:#fff}
+.tab span{font-size:17px;position:relative}.tab b{font-size:10px;font-weight:700}
+.bdg{position:absolute;top:-5px;right:-9px;background:#f59e0b;color:#fff;font-size:9px;font-style:normal;font-weight:700;border-radius:99px;padding:1px 5px}
+.ov{position:fixed;inset:0;background:rgba(35,32,52,.5);z-index:60;display:flex;align-items:flex-end;justify-content:center}
+.sheet{background:#fff;width:100%;max-width:560px;border-radius:24px 24px 0 0;padding:10px 20px 30px;max-height:88vh;overflow:auto}
+.handle{width:42px;height:5px;border-radius:99px;background:#e4e2f0;margin:6px auto 10px}
+.eyebrow{text-align:center;color:#9b98b0;font-size:11.5px;letter-spacing:.12em;text-transform:uppercase;font-weight:700;margin:2px 0 8px}
+.quote{background:#f7f6fb;border-left:4px solid #a5b4fc;border-radius:14px;padding:12px 14px;font-size:15.5px;line-height:1.5;margin:6px 0 10px}
+.fld{font-size:12.5px;color:#9b98b0;margin:10px 0 0;font-weight:700}
+.toast{position:fixed;top:16px;left:50%;transform:translateX(-50%);background:#312e46;color:#fff;border-radius:13px;padding:11px 16px;font-size:13.5px;z-index:99;box-shadow:0 12px 30px rgba(35,32,52,.35);max-width:90vw}
+.bar{height:10px;background:#e9e7f5;border-radius:99px;overflow:hidden;margin:10px 0 4px}
+.bar i{display:block;height:100%;background:linear-gradient(90deg,#818cf8,#14b8a6);border-radius:99px;transition:width .3s}
+.timer{font-size:44px;text-align:center;font-weight:700;font-variant-numeric:tabular-nums;margin:6px 0}
+.stat{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin:12px 0}
+.stat div{background:#f7f6fb;border-radius:14px;padding:10px;text-align:center}
+.stat b{font-size:21px;display:block}.stat span{font-size:11px;color:#8a87a0}
+.week{display:flex;gap:8px;align-items:flex-end;height:100px;margin-top:10px}
+.week>div{flex:1;display:flex;flex-direction:column;justify-content:flex-end;align-items:center;gap:3px;height:100%}
+.week i{width:100%;max-width:34px;background:linear-gradient(180deg,#818cf8,#6366f1);border-radius:7px;min-height:3px}
+.week b,.week em{font-size:10.5px;color:#8a87a0;font-style:normal;font-weight:700}
+ol.steps{padding-left:24px;line-height:1.55;font-size:14px}ol.steps li{margin:10px 0}
+.tip{background:#fff7e6;border:1px solid #f5e3c0;color:#92400e;border-radius:16px;padding:12px 14px;font-size:13.5px;line-height:1.5;margin:10px 0}
+.swap{background:#ecfdf5;border:1px solid #c6ecdc;color:#065f46;border-radius:14px;padding:12px 14px;margin:10px 0;font-size:14px;line-height:1.5}
+</style>
+</head>
+<body>
+<div id="app"></div>
+<script>
+const $=id=>document.getElementById(id);
+const uid=()=>Date.now().toString(36)+Math.random().toString(36).slice(2,7);
+const esc=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const ago=t=>{const s=(Date.now()-t)/1e3;return s<60?'just now':s<3600?Math.floor(s/60)+'m ago':s<86400?Math.floor(s/3600)+'h ago':Math.floor(s/86400)+'d ago'};
+const mmss=s=>String(Math.floor(s/60)).padStart(2,'0')+':'+String(s%60).padStart(2,'0');
+const pick=a=>a[Math.floor(Math.random()*a.length)];
+
+const LABELS=[['whatif','🌀','What-If'],['cat','🔥','Catastrophizing'],['mind','💭','Mind-Reading'],['always','♾️','Always/Never'],['self','🏷️','Labeling'],['future','🔮','Fortune-Telling']];
+const SWAPS=[['🚶','a 5-minute walk'],['🫁','4-7-8 breathing, three rounds'],['🎵','one favorite song, really listened to'],['💧','a glass of water, slowly'],['🧩','two minutes of a puzzle game'],['📞','text someone about anything else'],['🌱','water a plant']];
+
+let W;try{W=JSON.parse(localStorage.getItem('worrywindow')||'[]')}catch(e){W=[]}
+let CFG={tab:'log',filter:'all',dur:15,time:'17:30'};
+try{Object.assign(CFG,JSON.parse(localStorage.getItem('wwcfg')||'{}'))}catch(e){}
+const save=()=>localStorage.setItem('worrywindow',JSON.stringify(W));
+const saveCfg=()=>localStorage.setItem('wwcfg',JSON.stringify(CFG));
+let UI={capture:false,modal:null,challenge:null};
+let SES=null,TICK=null;
+
+function toast(m){const d=document.createElement('div');d.className='toast';d.textContent=m;document.body.appendChild(d);setTimeout(()=>d.remove(),3400)}
+function stBadge(w){return w.status==='parked'?'⏰ parked':w.status==='resolved'?(w.resolution==='released'?'🎈 released':w.resolution==='challenged'?'⚖️ worked':'✅ resolved'):'🫧 open'}
+
+function render(){
+  const parked=W.filter(w=>w.status==='parked').length;
+  let h='';
+  if(CFG.tab==='log')h=viewLog();
+  else if(CFG.tab==='window')h=viewWindow();
+  else if(CFG.tab==='stats')h=viewStats();
+  else h=viewMethod();
+  h+='<nav class="tabs">'+[['log','🫧','Catch'],['window','⏰','Window'],['stats','🌤️','Insights'],['method','📖','Method']].map(t=>
+    `<button class="tab ${CFG.tab===t[0]?'on':''}" onclick="go('${t[0]}')"><span>${t[2]}${t[0]==='window'&&parked?`<i class="bdg">${parked}</i>`:''}</span><b>${t[1]}</b></button>`).join('')+'</nav>';
+  if(UI.modal)h+=sheetWorry();
+  if(UI.challenge)h+=sheetChallenge();
+  $('app').innerHTML=h;
+}
+function go(t){CFG.tab=t;saveCfg();render()}
+
+function viewLog(){
+  let h=`<div class="head"><div class="logo">🪟</div><div><h1>Worry Window</h1><div class="sub">catch it · park it · meet it once a day</div></div></div>`;
+  if(!W.length)h+=`<div class="tip"><b>Three moves, two minutes:</b> catch the loop the moment it starts 🫧 → name the pattern 🏷️ (it's the loop, not you) → park it for your daily window ⏰.</div>`;
+  if(UI.capture){
+    h+=`<div class="card"><textarea id="wtext" rows="3" autofocus placeholder="What's spinning? Get it out of your head and onto the page…"></textarea>
+    <div class="fld">Name the pattern — optional</div>
+    <div class="lbls">`+LABELS.map(l=>`<button class="chip" data-l="${l[0]}" onclick="this.classList.toggle('on')">${l[1]} ${l[2]}</button>`).join('')+`</div>
+    <div class="row"><button class="btn primary" onclick="saveWorry(1)">⏰ Park it</button><button class="btn soft" onclick="saveWorry(0)">Just log it</button><button class="btn ghost" onclick="UI.capture=false;render()">cancel</button></div></div>`;
+  }else{
+    h+=`<div class="center"><button class="breath" onclick="UI.capture=true;render()">Catch a<br>worry</button><div class="hint">tap the moment you catch yourself looping</div></div>`;
+  }
+  const f=CFG.filter;
+  const cnt=s=>s==='all'?W.length:s==='open'?W.filter(w=>w.status!=='resolved').length:W.filter(w=>w.status===s).length;
+  h+='<div class="filters">'+[['all','All'],['open','Open'],['parked','⏰ Parked'],['resolved','✅ Resolved']].map(x=>
+    `<button class="chip ${f===x[0]?'on':''}" onclick="CFG.filter='${x[0]}';saveCfg();render()">${x[1]}${cnt(x[0])?' '+cnt(x[0]):''}</button>`).join('')+'</div>';
+  const list=W.filter(w=>f==='all'||(f==='open'?w.status!=='resolved':w.status===f));
+  if(!list.length)h+=`<div class="card empty">${W.length?'Nothing in this bucket right now ✓':'Nothing yet. That breathing button up there is your whole practice.'}</div>`;
+  list.forEach(w=>{
+    h+=`<div class="card wcard" onclick="UI.modal='${w.id}';render()"><div class="wtxt">${esc(w.text)}</div><div class="wmeta"><span class="chip st ${w.status}">${stBadge(w)}</span>${(w.labels||[]).slice(0,3).map(l=>{const L=LABELS.find(x=>x[0]===l);return L?`<span class="chip st lb">${L[1]} ${L[2]}</span>`:''}).join('')}<span class="tm">${ago(w.created)}</span></div></div>`;
+  });
+  return h;
+}
+
+function saveWorry(park){
+  const t=$('wtext')?$('wtext').value.trim():'';
+  if(!t)return;
+  const labels=[...document.querySelectorAll('.lbls .chip.on')].map(c=>c.dataset.l);
+  W.unshift({id:uid(),text:t,labels:labels,status:park?'parked':'active',resolution:null,created:Date.now()});
+  save();UI.capture=false;render();
+  toast(park?'Parked ⏰ meanwhile: '+pick(SWAPS)[0]+' '+pick(SWAPS)[1]:'Caught it ✓');
+}
+
+function sheetWorry(){
+  const w=W.find(x=>x.id===UI.modal);if(!w)return'';
+  const labels=w.labels||[];
+  return `<div class="ov" onclick="if(event.target===this)closeSheet()"><div class="sheet">
+  <div class="handle"></div><div class="eyebrow">a thought, not a fact</div>
+  <div class="quote">${esc(w.text)}</div>
+  <div class="fld">Name the pattern — it's the loop, not you</div>
+  <div class="lbls">`+LABELS.map(l=>`<button class="chip ${labels.includes(l[0])?'on':''}" onclick="tglLbl('${w.id}','${l[0]}')">${l[1]} ${l[2]}</button>`).join('')+`</div>
+  <div class="row"><button class="btn soft" onclick="park('${w.id}')">${w.status==='parked'?'Unpark':'⏰ Park it'}</button><button class="btn primary" onclick="UI.challenge='${w.id}';UI.modal=null;render()">⚖️ Challenge it</button></div>
+  ${w.status!=='resolved'?`<div class="row"><button class="btn ghost" onclick="resolve('${w.id}','manual')">mark resolved ✅</button></div>`:''}
+  ${w.ch?`<div class="swap"><b>⚖️ Verdict:</b> ${esc(w.ch.is||'—')}<br>${w.ch.next?'<b>👣 Next:</b> '+esc(w.ch.next):''}</div>`:''}
+  <div class="row" style="justify-content:center"><button class="btn ghost" onclick="del('${w.id}')">delete</button></div>
+  </div></div>`;
+}
+function tglLbl(id,l){const w=W.find(x=>x.id===id);if(!w)return;w.labels=w.labels||[];w.labels=w.labels.includes(l)?w.labels.filter(x=>x!==l):[...w.labels,l];save();render()}
+function park(id){const w=W.find(x=>x.id===id);if(!w)return;w.status=w.status==='parked'?'active':'parked';save();render()}
+function resolve(id,r){const w=W.find(x=>x.id===id);if(!w)return;w.status='resolved';w.resolution=r;save();render();toast('Resolved ✅')}
+function del(id){W=W.filter(x=>x.id!==id);save();closeSheet()}
+function closeSheet(){UI.modal=null;UI.challenge=null;render()}
+
+function sheetChallenge(){
+  const w=W.find(x=>x.id===UI.challenge);if(!w)return'';
+  const c=w.ch||{for:'',against:'',is:'',next:''};
+  return `<div class="ov" onclick="if(event.target===this)closeSheet()"><div class="sheet">
+  <div class="handle"></div><div class="eyebrow">⚖️ thought court</div>
+  <div class="quote">${esc(w.text)}</div>
+  <div class="fld">Evidence FOR (facts only)</div><textarea id="cf" rows="2">${esc(c.for)}</textarea>
+  <div class="fld">Evidence AGAINST</div><textarea id="ca" rows="2">${esc(c.against)}</textarea>
+  <div class="fld">🌤️ What IS true (the balanced version)</div><textarea id="ci" rows="2">${esc(c.is)}</textarea>
+  <div class="fld">👣 One tiny next step (5 min max)</div><input id="cn" value="${esc(c.next)}" placeholder="draft one line… look up one fact…">
+  <div class="row"><button class="btn primary" onclick="saveCh('${w.id}')">Save verdict ✓</button><button class="btn ghost" onclick="closeSheet()">close</button></div>
+  </div></div>`;
+}
+function saveCh(id){
+  const w=W.find(x=>x.id===id);if(!w)return;
+  w.ch={for:$('cf').value.trim(),against:$('ca').value.trim(),is:$('ci').value.trim(),next:$('cn').value.trim()};
+  const wasWin=SES&&SES.running;
+  w.status='resolved';w.resolution='challenged';save();
+  UI.challenge=null;UI.modal=null;
+  if(wasWin){SES.stats.work++;advance()}
+  render();toast('Verdict saved — worry resolved ⚖️✅');
+}
+
+function viewWindow(){
+  const parked=W.filter(w=>w.status==='parked');
+  if(SES&&SES.done){
+    const d=SES.done;
+    return `<div class="card"><div style="text-align:center;font-size:44px">🌙</div><h2 style="text-align:center;margin:4px 0">Window closed</h2>
+    <p class="center" style="color:#8a87a0">${d.reason==='time'?'Time is up — that boundary is the whole point.':d.reason==='done'?'You got through the entire queue.':'You closed it early — that\'s allowed.'}</p>
+    <div class="stat"><div><b>${d.rel}</b><span>🎈 released</span></div><div><b>${d.work}</b><span>⚖️ worked</span></div><div><b>${d.keep}</b><span>⏳ parked</span></div></div>
+    ${d.keep?'<p style="text-align:center;color:#8a87a0;font-size:13.5px">The rest stays parked for tomorrow. Deferring <i>is</i> the method.</p>':''}
+    <div class="swap"><b>Swap the leftover rumination for:</b><br>${d.swap[0]} ${d.swap[1]}</div>
+    <button class="btn primary" style="width:100%" onclick="SES=null;render()">Done</button></div>`;
+  }
+  if(SES&&SES.running){
+    const w=SES.queue[SES.idx];
+    return `<div class="card"><div class="timer" id="tleft">${mmss(Math.max(0,Math.round((SES.endsAt-Date.now())/1e3)))}</div>
+    <div class="bar"><i id="tbar" style="width:100%"></i></div>
+    <p class="center" style="color:#8a87a0;font-size:13px">${SES.idx+1} of ${SES.queue.length} · bounded time, on purpose</p>
+    ${w?`<div class="quote">${esc(w.text)}</div>
+    <div class="row"><button class="btn green" onclick="release('${w.id}')">🎈 It's lighter now</button><button class="btn primary" onclick="UI.challenge='${w.id}';render()">⚖️ Still heavy — work it</button></div>
+    <div class="row"><button class="btn ghost" onclick="keep()">⏭ Not today — keep it parked</button></div>`:''}
+    <div class="row" style="justify-content:center"><button class="btn ghost" onclick="finish('early')">close window early</button></div></div>`;
+  }
+  return `<div class="card"><h2>The Worry Window</h2>
+  <p style="color:#514d68;font-size:14.5px">Worries get <b>parked</b> through the day — not suppressed, just scheduled. Once a day you open the window, meet them on purpose, and close it. Most arrive already lighter.</p>
+  <div class="fld">Daily time <input type="time" value="${CFG.time}" onchange="CFG.time=this.value;saveCfg()"></div>
+  <div class="fld">Length</div><div class="dur">${[5,10,15,20,30].map(d=>`<button class="chip ${CFG.dur===d?'on':''}" onclick="CFG.dur=${d};saveCfg();render()">${d}m</button>`).join('')}</div>
+  <p style="color:#9b98b0;font-size:12.5px">Tip: set a daily phone alarm at your window time until the habit sticks.</p>
+  <button class="btn primary" style="width:100%" onclick="startWin()">${parked.length?'Open today\'s window · '+parked.length+' parked':'Open a window'}</button>
+  ${parked.length?'':'<p class="center" style="color:#8a87a0;font-size:13px;margin-top:10px">Nothing parked yet. Hit "⏰ Park it" when a worry won\'t leave.</p>'}</div>`;
+}
+
+function startWin(){
+  const parked=W.filter(w=>w.status==='parked');
+  if(!parked.length){toast('Nothing parked yet — park worries as they show up');return}
+  SES={queue:parked.slice(),idx:0,total:CFG.dur*60,endsAt:Date.now()+CFG.dur*60000,stats:{rel:0,work:0,keep:0},running:true,done:null};
+  render();startTick();
+}
+function startTick(){
+  clearInterval(TICK);
+  TICK=setInterval(()=>{
+    if(!SES||!SES.running)return clearInterval(TICK);
+    const left=Math.max(0,Math.round((SES.endsAt-Date.now())/1e3));
+    const el=$('tleft');
+    if(el){el.textContent=mmss(left);$('tbar').style.width=(100*left/SES.total)+'%'}
+    if(left<=0)finish('time');
+  },250);
+}
+function release(id){const w=W.find(x=>x.id===id);if(w){w.status='resolved';w.resolution='released';save()}SES.stats.rel++;advance()}
+function keep(){SES.stats.keep++;advance()}
+function advance(){if(!SES)return;SES.idx++;if(SES.idx>=SES.queue.length)finish('done');else render()}
+function finish(reason){if(!SES)return;SES.running=false;SES.done={rel:SES.stats.rel,work:SES.stats.work,keep:SES.stats.keep,total:SES.queue.length,reason,swap:pick(SWAPS)};clearInterval(TICK);render()}
+
+function viewStats(){
+  const total=W.length,resolved=W.filter(w=>w.status==='resolved').length,released=W.filter(w=>w.status==='resolved'&&w.resolution==='released').length,parked=W.filter(w=>w.status==='parked').length;
+  const days=[];for(let i=6;i>=0;i--){const d=new Date();d.setHours(0,0,0,0);d.setDate(d.getDate()-i);days.push(d)}
+  const counts=days.map(d=>W.filter(w=>w.created>=d.getTime()&&w.created<d.getTime()+864e5).length);
+  const max=Math.max(1,...counts);
+  const lc={};W.forEach(w=>(w.labels||[]).forEach(l=>lc[l]=(lc[l]||0)+1));
+  const top=Object.entries(lc).sort((a,b)=>b[1]-a[1]).slice(0,3);
+  let h=`<div class="stat"><div><b>${total}</b><span>worries caught</span></div><div><b>${resolved}</b><span>resolved</span></div><div><b>${parked}</b><span>parked now</span></div></div>`;
+  if(released)h+=`<div class="tip">🎈 ${released} ${released===1?'worry lost':'worries lost'} its sting inside the window — no effort, just time. That's the method working.</div>`;
+  h+=`<div class="card"><h3>This week</h3><div class="week">`+counts.map((c,i)=>`<div><em>${c||''}</em><i style="height:${(c/max)*100}%"></i><b>${'SMTWTFS'[days[i].getDay()]}</b></div>`).join('')+`</div></div>`;
+  h+=`<div class="card"><h3>Your top loops</h3>`+(top.length?`<div class="lbls">`+top.map(([l,n])=>{const L=LABELS.find(x=>x[0]===l);return L?`<span class="chip" style="background:#4f46e5;color:#fff;border-color:#4f46e5;cursor:default">${L[1]} ${L[2]} ×${n}</span>`:''}).join('')+`</div>`:`<p style="color:#8a87a0;font-size:14px">Label a few worries and your patterns will surface here.</p>`)+`<p style="color:#9b98b0;font-size:12.5px;margin-top:8px">Seeing the pattern is step 1 — awareness before change.</p></div>`;
+  return h;
+}
+
+function viewMethod(){
+  return `<div class="card"><h2>The method</h2><ol class="steps">
+  <li><b>🫧 Catch the worry loop.</b> Notice the moment the spin starts. Awareness is the whole game.</li>
+  <li><b>🏷️ Label the thought, not yourself.</b> "I'm having a catastrophizing thought" — not "I'm a disaster."</li>
+  <li><b>⚖️ Challenge it with evidence.</b> Feelings aren't facts. Put the thought on trial.</li>
+  <li><b>🌤️ Trade "what if" for "what is."</b> What-ifs are fiction; write down what's actually true.</li>
+  <li><b>👣 Take one tiny action.</b> Five minutes. A draft, a question, a lookup. Motion beats rumination.</li>
+  <li><b>⏰ Keep a daily worry window.</b> Park worries all day; meet them once, on purpose, then close the window.</li>
+  <li><b>🔁 Swap rumination for a habit.</b> Walk, breathe, song, water. Replace — don't just resist.</li>
+  </ol></div>`;
+}
+
+render();
+</script>
+</body>
+</html>
