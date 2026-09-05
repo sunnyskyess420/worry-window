@@ -3,8 +3,9 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Worry Window</title>
-<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🪟</text></svg>">
+<title>Worry Toolbox</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🛤️</text></svg>">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <style>
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
 body{margin:0 auto;max-width:560px;padding:16px 16px 120px;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;background:radial-gradient(900px 600px at 90% -10%,#ece9ff,rgba(236,233,255,0)),radial-gradient(700px 500px at -10% 100%,#e2f5f0,rgba(226,245,240,0)),#f7f6fb;color:#312e46}
@@ -13,6 +14,14 @@ body{margin:0 auto;max-width:560px;padding:16px 16px 120px;font-family:-apple-sy
 h1{font-size:21px;margin:0}h2{margin:4px 0}h3{margin:0 0 6px}
 .sub{font-size:12px;color:#8a87a0}
 .card{background:#fff;border:1px solid #eceaf4;border-radius:18px;padding:16px;margin:10px 0;box-shadow:0 6px 24px rgba(62,55,130,.06)}
+.skill{display:flex;gap:12px;align-items:center;background:#fff;border:1px solid #eceaf4;border-radius:18px;padding:14px;margin:10px 0;box-shadow:0 6px 24px rgba(62,55,130,.06);cursor:pointer}
+.skill:active{transform:scale(.985)}
+.skill.cur{border-color:#c7d2fe;background:linear-gradient(135deg,#f3f2ff,#fff 65%);box-shadow:0 8px 28px rgba(79,70,229,.14)}
+.skill.lock{opacity:.72}
+.skic{width:44px;height:44px;border-radius:13px;background:#f7f6fb;display:flex;align-items:center;justify-content:center;font-size:22px;flex-shrink:0}
+.skill b{display:block;font-size:15px}
+.skill p{margin:2px 0 0;font-size:12.5px;color:#8a87a0;line-height:1.4}
+.skst{margin-left:auto;font-size:11px;font-weight:700;color:#8a87a0;flex-shrink:0;text-align:right}
 .btn{border:none;border-radius:13px;padding:12px 16px;font-size:15px;font-weight:600;cursor:pointer;font-family:inherit}
 .primary{background:linear-gradient(135deg,#6366f1,#4f46e5);color:#fff;box-shadow:0 8px 20px rgba(79,70,229,.3)}
 .green{background:linear-gradient(135deg,#10b981,#059669);color:#fff}
@@ -26,6 +35,7 @@ input[type=time]{width:auto}
 .lbls,.filters,.dur{display:flex;flex-wrap:wrap;gap:6px;margin:8px 0}
 .breath{width:180px;height:180px;border-radius:50%;border:none;cursor:pointer;background:radial-gradient(circle at 32% 28%,#a5b4fc,#6366f1 58%,#4f46e5);color:#fff;font-size:19px;font-weight:700;line-height:1.3;box-shadow:0 18px 46px rgba(99,102,241,.38);animation:b 5.5s ease-in-out infinite;font-family:inherit}
 @keyframes b{0%,100%{transform:scale(1)}50%{transform:scale(1.06)}}
+.bc{width:150px;height:150px;border-radius:50%;margin:14px auto;background:radial-gradient(circle at 32% 28%,#a5b4fc,#6366f1 58%,#4f46e5);transition:transform 4s ease;box-shadow:0 14px 40px rgba(99,102,241,.35)}
 .center{text-align:center;padding:18px 0}
 .hint{color:#9b98b0;font-size:13px;margin-top:14px}
 .wcard{cursor:pointer}.wcard:active{transform:scale(.985)}
@@ -52,6 +62,8 @@ input[type=time]{width:auto}
 .toast{position:fixed;top:16px;left:50%;transform:translateX(-50%);background:#312e46;color:#fff;border-radius:13px;padding:11px 16px;font-size:13.5px;z-index:99;box-shadow:0 12px 30px rgba(35,32,52,.35);max-width:90vw}
 .bar{height:10px;background:#e9e7f5;border-radius:99px;overflow:hidden;margin:10px 0 4px}
 .bar i{display:block;height:100%;background:linear-gradient(90deg,#818cf8,#14b8a6);border-radius:99px;transition:width .3s}
+.pbar{height:8px;background:#e9e7f5;border-radius:99px;overflow:hidden;margin:8px 0 2px}
+.pbar i{display:block;height:100%;background:linear-gradient(90deg,#818cf8,#14b8a6);border-radius:99px;transition:width .3s}
 .timer{font-size:44px;text-align:center;font-weight:700;font-variant-numeric:tabular-nums;margin:6px 0}
 .stat{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin:12px 0}
 .stat div{background:#f7f6fb;border-radius:14px;padding:10px;text-align:center}
@@ -63,11 +75,23 @@ input[type=time]{width:auto}
 ol.steps{padding-left:24px;line-height:1.55;font-size:14px}ol.steps li{margin:10px 0}
 .tip{background:#fff7e6;border:1px solid #f5e3c0;color:#92400e;border-radius:16px;padding:12px 14px;font-size:13.5px;line-height:1.5;margin:10px 0}
 .swap{background:#ecfdf5;border:1px solid #c6ecdc;color:#065f46;border-radius:14px;padding:12px 14px;margin:10px 0;font-size:14px;line-height:1.5}
+.why{background:#eef0ff;border:1px solid #dbe0ff;color:#4338ca;border-radius:14px;padding:12px 14px;margin:10px 0;font-size:14px;line-height:1.55}
+.mission{background:#f7f6fb;border:1.5px dashed #d9d6ee;border-radius:14px;padding:12px 14px;margin:12px 0 4px}
+.lesson p{line-height:1.6;font-size:14.5px;color:#514d68;margin:8px 0}
+.aerr{color:#dc2626;font-size:13.5px;min-height:18px;margin:6px 0 2px;text-align:center}
 </style>
 </head>
 <body>
 <div id="app"></div>
 <script>
+// ⬇️⬇️ PASTE YOUR SUPABASE KEYS HERE ⬇️⬇️
+const SUPA_URL="PASTE-YOUR-PROJECT-URL-HERE";
+const SUPA_KEY="PASTE-YOUR-ANON-KEY-HERE";
+// ⬆️⬆️ PASTE YOUR SUPABASE KEYS HERE ⬆️⬆️
+
+const sb=(SUPA_URL.startsWith('http')&&SUPA_KEY.length>20)?supabase.createClient(SUPA_URL,SUPA_KEY):null;
+let USER=null,SYNC='local';
+
 const $=id=>document.getElementById(id);
 const uid=()=>Date.now().toString(36)+Math.random().toString(36).slice(2,7);
 const esc=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
@@ -82,56 +106,246 @@ const LABELS=[
 ['always','♾️','All-or-nothing'],
 ['self','🏷️','Self-blame'],
 ['future','🔮','Fortune-telling']];
-const SWAPS=[['🚶','a 5-minute walk'],['🫁','4-7-8 breathing, three rounds'],['🎵','one favorite song, really listened to'],['💧','a glass of water, slowly'],['🧩','two minutes of a puzzle game'],['📞','text someone about anything else'],['🌱','water a plant']];
+const SWAPS=[['🚶','a 5-minute walk'],['🫁','slow belly breaths'],['🎵','one favorite song, really listened to'],['💧','a glass of water, slowly'],['🧩','two minutes of a puzzle game'],['📞','text someone about anything else'],['🌱','water a plant'],['🤸','stretch for two minutes']];
+const G5=[['👀','see',5],['✋','feel',4],['👂','hear',3],['👃','smell',2],['👄','taste',1]];
+const BP=[['Breathe in…',4,1.18],['Hold…',4,1.18],['Breathe out slowly…',6,1]];
+const REQ=[2,2,1,1,1,1,1];
 
 let W;try{W=JSON.parse(localStorage.getItem('worrywindow')||'[]')}catch(e){W=[]}
-let CFG={tab:'log',filter:'all',dur:15,time:'17:30',hi:false};
+let CFG={tab:'path',filter:'all',dur:15,time:'17:30',hi:false};
 try{Object.assign(CFG,JSON.parse(localStorage.getItem('wwcfg')||'{}'))}catch(e){}
-const save=()=>localStorage.setItem('worrywindow',JSON.stringify(W));
+if(CFG.tab==='log')CFG.tab='worries';
+if(CFG.tab==='tools')CFG.tab='path';
+let USE={g5:0,br:0,trueNow:0,win:0,hb:0};
+try{Object.assign(USE,JSON.parse(localStorage.getItem('wwuse')||'{}'))}catch(e){}
+try{const old=JSON.parse(localStorage.getItem('wwcfg')||'{}').use;if(old){['g5','br','hb'].forEach(k=>{if(old[k]>USE[k])USE[k]=old[k]})}}catch(e){}
+const saveLocal=()=>localStorage.setItem('worrywindow',JSON.stringify(W));
 const saveCfg=()=>localStorage.setItem('wwcfg',JSON.stringify(CFG));
-let UI={capture:false,modal:null,challenge:null,welcome:!CFG.hi};
-let SES=null,TICK=null;
+const saveUse=()=>{localStorage.setItem('wwuse',JSON.stringify(USE));pushSoon()};
+let UI={capture:false,modal:null,challenge:null,welcome:!CFG.hi,auth:false,tricks:false,lesson:null,tool:null,gstep:0,kind:null};
+let SES=null,TICK=null,BREATH=null;
+
+// ---------- cloud sync ----------
+const save=()=>{saveLocal();pushSoon()};
+let pushT=null;
+function pushSoon(){if(!sb||!USER)return;SYNC='saving';updateChip();clearTimeout(pushT);pushT=setTimeout(pushNow,700)}
+async function pushNow(){
+  if(!sb||!USER)return;
+  try{
+    const{error}=await sb.from('ww_state').upsert({user_id:USER.id,payload:{v:2,w:W,p:USE},updated_at:new Date().toISOString()});
+    if(error)throw error;
+    SYNC='synced';updateChip();
+  }catch(e){SYNC='offline';updateChip();toast("☁️ Couldn't sync just now — everything is safe on this device and will upload next time.")}
+}
+async function pullRemote(celebrate){
+  if(!sb||!USER)return;
+  try{
+    const{data,error}=await sb.from('ww_state').select().eq('user_id',USER.id).maybeSingle();
+    if(error)throw error;
+    let rw=null,rp=null;
+    if(data){
+      if(Array.isArray(data.payload))rw=data.payload;
+      else if(data.payload){rw=data.payload.w||[];rp=data.payload.p||{}}
+    }
+    if(rw&&rw.length){
+      const map={};rw.forEach(w=>map[w.id]=w);
+      W.forEach(w=>{if(!map[w.id])map[w.id]=w});
+      W=Object.values(map).sort((a,b)=>b.created-a.created);
+    }
+    if(rp)['g5','br','trueNow','win','hb'].forEach(k=>{if((rp[k]||0)>USE[k])USE[k]=rp[k]});
+    localStorage.setItem('wwuse',JSON.stringify(USE));
+    SYNC='synced';saveLocal();UI.auth=false;render();pushNow();
+    if(celebrate)toast('Signed in ✓ your path and worries now follow you everywhere ☁️');
+  }catch(e){SYNC='offline';updateChip();toast('Signed in, but the cloud is unreachable — will retry. '+e.message)}
+}
+function chipTxt(){return !sb?'':!USER?'🔒 Sign in to sync':SYNC==='saving'?'☁️ saving…':SYNC==='offline'?'☁️ retry…':'☁️ synced'}
+function updateChip(){const el=$('syncchip');if(el)el.textContent=chipTxt()}
+function syncChipHTML(){return sb?`<button id="syncchip" class="chip" style="margin-left:auto;font-size:12px" onclick="UI.auth=true;render()">${chipTxt()}</button>`:''}
+window.addEventListener('online',()=>{if(USER)pushSoon()});
 
 function toast(m){const d=document.createElement('div');d.className='toast';d.textContent=m;document.body.appendChild(d);setTimeout(()=>d.remove(),3400)}
-function stBadge(w){return w.status==='parked'?'⏰ waiting':w.status==='resolved'?(w.resolution==='released'?'🎈 let go':w.resolution==='challenged'?'⚖️ talked back':'✅ done'):'🫧 fresh'}
+function stBadge(w){return w.status==='parked'?'⏰ waiting':w.status==='resolved'?(w.resolution==='released'?'🎈 let go':w.resolution==='challenged'?'⚖️ talked back':w.resolution==='action'?'👣 acted on it':'✅ done'):'🫧 fresh'}
+
+// ---------- progress metrics ----------
+const mCaught=()=>W.length;
+const mLabeled=()=>W.filter(w=>(w.labels||[]).length>0).length;
+const mChecks=()=>W.filter(w=>w.ch).length;
+const mGround=()=>USE.g5+USE.br+USE.trueNow;
+const mSteps=()=>W.filter(w=>w.action&&w.action.done).length;
+const mWin=()=>USE.win;
+const mHabit=()=>USE.hb;
+const METRICS=[mCaught,mLabeled,mChecks,mGround,mSteps,mWin,mHabit];
+const doneFlag=n=>METRICS[n-1]()>=REQ[n-1];
+const unlocked=n=>n===1||doneFlag(n-1);
+const doneCount=()=>[1,2,3,4,5,6,7].filter(doneFlag).length;
 
 function render(){
-  const parked=W.filter(w=>w.status==='parked').length;
+  const openC=W.filter(w=>w.status!=='resolved').length;
   let h='';
-  if(CFG.tab==='log')h=viewLog();
+  if(CFG.tab==='path')h=UI.tool==='ground'?viewGround():UI.tool==='habit'?viewHabit():UI.lesson?lessonHTML(UI.lesson):viewPath();
+  else if(CFG.tab==='worries')h=viewWorries();
   else if(CFG.tab==='window')h=viewWindow();
-  else if(CFG.tab==='stats')h=viewStats();
-  else h=viewMethod();
-  h+='<nav class="tabs">'+[['log','🫧','Worries'],['window','⏰','Time'],['stats','🌤️','Progress'],['method','📖','Guide']].map(t=>
-    `<button class="tab ${CFG.tab===t[0]?'on':''}" onclick="go('${t[0]}')"><span>${t[2]}${t[0]==='window'&&parked?`<i class="bdg">${parked}</i>`:''}</span><b>${t[1]}</b></button>`).join('')+'</nav>';
+  else if(CFG.tab==='progress')h=viewStats();
+  else h=viewGuide();
+  h+='<nav class="tabs">'+[['path','🛤️','Path'],['worries','🫧','Worries'],['progress','🌤️','Progress'],['guide','📖','Guide']].map(t=>
+    `<button class="tab ${CFG.tab===t[0]?'on':''}" onclick="go('${t[0]}')"><span>${t[2]}${t[0]==='worries'&&openC?`<i class="bdg">${openC}</i>`:''}</span><b>${t[1]}</b></button>`).join('')+'</nav>';
   if(UI.welcome)h+=sheetWelcome();
+  if(UI.auth)h+=sheetAuth();
+  if(UI.tricks)h+=sheetTricks();
   if(UI.modal)h+=sheetWorry();
   if(UI.challenge)h+=sheetChallenge();
   $('app').innerHTML=h;
 }
-function go(t){CFG.tab=t;saveCfg();render()}
+function go(t){UI.tool=null;UI.lesson=null;stopBreathSilent();CFG.tab=t;saveCfg();render()}
+function openSkill(n){CFG.tab='path';UI.tool=null;stopBreathSilent();UI.lesson=n;saveCfg();render()}
+function closeLesson(){UI.lesson=null;UI.tool=null;stopBreathSilent();render()}
+function startCatch(){CFG.tab='worries';UI.capture=true;UI.lesson=null;UI.tool=null;saveCfg();render()}
+function toOpenWorries(msg){CFG.tab='worries';CFG.filter='open';UI.lesson=null;UI.tool=null;saveCfg();toast(msg);render()}
 
-function sheetWelcome(){
-  return `<div class="ov"><div class="sheet">
-  <div class="handle"></div><div class="eyebrow">welcome 👋</div>
-  <h2 style="text-align:center">Your worries, on <i>your</i> schedule</h2>
-  <p style="color:#514d68;font-size:14.5px;line-height:1.6">Here's the whole idea:<br><br>🫧 <b>When a worry pops up</b>, don't wrestle it. Write it down in a sentence or two.<br><br>⏰ <b>Save it for your daily Worry Time.</b> Once your brain knows the worry will get its turn, it can let go for now.<br><br>🌤️ <b>Once a day</b>, open the window, face the list, close it. Most worries feel much smaller in daylight.<br><br>Nobody sees this but you. There's no wrong way to use it.</p>
-  <div class="row"><button class="btn primary" style="flex:1" onclick="CFG.hi=true;saveCfg();UI.welcome=false;render()">Let's go 🫧</button><button class="btn soft" style="flex:1" onclick="CFG.hi=true;saveCfg();UI.welcome=false;CFG.tab='method';saveCfg();render()">📖 Show me the guide first</button></div>
-  </div></div>`;
+const SKMETA=[
+['🌀','Catch the worry loop','Notice the spin and write it down.'],
+['🏷️','Name the thought, not yourself','“I’m having an anxious thought” — not “I am anxious.”'],
+['⚖️','Check the facts','Put the worry on trial with three questions.'],
+['🌸','“What if” → “What is”','Ground yourself back in right now.'],
+['📝','One small step','Real problem? Do five minutes of it today.'],
+['⏰','The Worry Window','Give worry a schedule — later, on purpose.'],
+['💗','Swap in a helpful habit','Redirect the loop to something grounding.']];
+
+function viewPath(){
+  const cur=[1,2,3,4,5,6,7].find(n=>unlocked(n)&&!doneFlag(n));
+  const done=doneCount();
+  let h=`<div class="head"><div class="logo">🛤️</div><div><h1>My Path</h1><div class="sub">learn one skill at a time — no rush</div></div>${syncChipHTML()}</div>`;
+  h+=`<div class="card"><b>${done===7?'All seven skills practiced — the toolbox is yours 🎉':done===0?'Your first skill is ready below 👇':`Nice — ${done} of 7 skills practiced`}</b>
+  <div class="pbar"><i style="width:${Math.round(done/7*100)}%"></i></div>
+  <p class="hint" style="margin-top:6px">${done===7?'Use any tool, anytime, in any order. Reps are what rewire.':'Each skill unlocks a little practice mission. Finish it and the next skill opens. You can peek ahead anytime — nothing is hidden from you.'}</p></div>`;
+  [1,2,3,4,5,6,7].forEach(n=>{
+    const d=doneFlag(n),u=unlocked(n);
+    const cls=d?'skill':u?(n===cur?'skill cur':'skill'):'skill lock';
+    const st=d?'✅':u?(n===cur?'up next':'open'):'🔒';
+    h+=`<div class="${cls}" onclick="openSkill(${n})"><div class="skic">${SKMETA[n-1][0]}</div><div style="flex:1"><b>${n}. ${SKMETA[n-1][1]}</b><p>${u?SKMETA[n-1][2]:'Unlocks when you finish Skill '+(n-1)+'’s practice — or tap to peek.'}</p></div><div class="skst">${st}</div></div>`;
+  });
+  h+=`<div class="card" style="opacity:.85"><b>⏰ About the Worry Window</b><p style="color:#8a87a0;font-size:13px;margin:4px 0 8px">That’s Skill 6, near the end — on purpose. Your therapist wants this one light, so the app treats it that way. If worries are stacking up right now, the move is catching them (Skill 1), not scheduling them.</p><button class="btn ghost" onclick="CFG.tab='window';saveCfg();render()">peek at it anyway</button></div>`;
+  return h;
 }
 
-function viewLog(){
-  let h=`<div class="head"><div class="logo">🪟</div><div><h1>Worry Window</h1><div class="sub">write it down · meet it once a day · move on</div></div></div>`;
-  if(!W.length)h+=`<div class="tip"><b>New here? This is all you need to know:</b><br>1️⃣ When a worry won't stop spinning, tap the big button and write it down.<br>2️⃣ Tap "⏰ Save for Worry Time" — you'll face it later, on purpose.<br>3️⃣ Once a day, open your Worry Time, go through the list, then close it. Worries feel smaller in daylight. Really.</div>`;
+function missionBox(n){
+  const v=METRICS[n-1](),r=REQ[n-1];
+  const prog=`<b style="font-size:13px">🎯 Practice mission: ${Math.min(v,r)} of ${r} done</b>`;
+  let btn='';
+  if(n===1)btn=`<button class="btn primary" style="width:100%;margin-top:8px" onclick="startCatch()">🫧 Catch a worry</button>`;
+  if(n===2)btn=`<div class="row"><button class="btn primary" style="flex:1" onclick="toOpenWorries('Open a worry, then tap one of the 🏷️ trick labels')">Open my worries</button><button class="btn soft" onclick="UI.tricks=true;render()">See the 6 tricks</button></div>`;
+  if(n===3)btn=`<button class="btn primary" style="width:100%;margin-top:8px" onclick="toOpenWorries('Open a worry, then tap ⚖️ Talk back to it')">Pick a worry to fact-check</button>`;
+  if(n===4)btn=`<div class="row"><button class="btn soft" style="flex:1" onclick="UI.gstep=0;UI.tool='ground';render()">👀 Senses game</button></div><div class="row"><button class="btn soft" style="flex:1" onclick="startBreath()">🫁 Belly breathing</button></div><div class="row"><button class="btn soft" style="flex:1" onclick="UI.gstep='true';UI.tool='ground';render()">🌤️ Name what is true</button></div>`;
+  if(n===5)btn=`<button class="btn primary" style="width:100%;margin-top:8px" onclick="toOpenWorries('Open a worry, add your 👣 small step, then come back and tap “I did it”')">Open my worries</button>`;
+  if(n===6)btn=`<button class="btn primary" style="width:100%;margin-top:8px" onclick="CFG.tab='window';UI.lesson=null;saveCfg();render()">Open the Worry Window</button>`;
+  if(n===7)btn=`<button class="btn primary" style="width:100%;margin-top:8px" onclick="UI.tool='habit';render()">Pick a swap habit</button>`;
+  return `<div class="mission">${prog}<p class="hint" style="margin:4px 0 0">${v>=r?'Done ✓ — the next skill is unlocked. Reps still count, so keep using it!':'Small reps count. Do it once and the path moves forward.'}</p>${btn}</div>`;
+}
+
+function lessonHTML(n){
+  const u=unlocked(n);
+  const L={
+  1:{w:`Worry feels automatic — one minute you're doing dishes, the next your mind is playing tomorrow's meeting going badly, on repeat. <b>Skill 1 is simply noticing that moment.</b> You don't have to fix anything or feel better yet. You just catch the loop and write it down in a sentence or two.<br><br>Then ask the handout's question: <i>“Is this a real problem, or a fear-based thought?”</i> Real problems get action later (Skill 5). Fear-based thoughts get named and scheduled (later skills). Either way — out of your head, onto the page.`,
+     y:`You can't change a loop you don't notice. Catching it creates a pause — and inside that pause, every other skill becomes possible. Writing it down also moves the worry out of your head (where it spins) onto the page (where it sits still). That alone takes the edge off.`,
+     ex:`🫧 Example: Making coffee, I notice I've replayed tomorrow's meeting going badly five times. That's the loop. I open the app, type “What if I embarrass myself tomorrow?” and get back to my coffee. Thirty seconds. Done.`},
+  2:{w:`Instead of saying <b>“I am anxious,”</b> you say <b>“I'm having an anxious thought.”</b> One small word change — huge difference. Even better: give the thought the name of its trick. Is it a 🌀 What-if spiral? A 🔥 worst-case movie? 🔮 Fortune-telling? There are six common tricks, and your brain has favorites.`,
+     y:`Labeling creates distance. You are the sky; the thought is weather passing through. When you name the trick, you're reminded: <i>this is a brain habit, not the truth about my life.</i> That lowers the emotional intensity and makes the thought feel temporary — because it is.`,
+     ex:`🏷️ Example: “This will be a disaster” feels like a prophecy. “I'm having a fortune-telling thought” feels like something you're <i>watching</i>. Same brain, same moment — completely different grip.`},
+  3:{w:`Now that you can catch and name a worry, you question it — like a detective, not a prosecutor. The handout gives three questions:<br>1. <b>What proof do I have this will actually happen?</b><br>2. <b>Have I faced something similar before? What happened?</b><br>3. <b>What's a more balanced way to see this?</b><br><br>Short, honest answers are perfect. “Honestly? No proof yet” is a great answer.`,
+     y:`Worry argues with feelings. Facts argue back. A vague dread floating in your head feels enormous; the moment it becomes specific claims on a page, it can be checked — and worries usually lose power when examined logically. Not always immediately. Often.`,
+     ex:`⚖️ Example: “I'll bomb the presentation.” Proof? None — I've prepared twice. Faced similar? Yes, last month's went fine. Balanced version: “I'll be nervous, and I've done this before. Nervous isn't unprepared.”`},
+  4:{w:`Worry lives in the future. Calm lives in the present. This skill pulls you back to <b>right now</b> with three tools:<br><br>👀 <b>The 5-4-3-2-1 senses game</b> — name 5 things you see, 4 you feel, 3 you hear, 2 you smell, 1 you taste.<br>🫁 <b>Deep belly breathing</b> — the app guides you; your belly rises on the in-breath.<br>🌤️ <b>Name what is true right now</b> — answer “what if…” with what <i>is</i>.`,
+     y:`Your brain can't fully worry about the future while it's busy registering the present. That's not a trick — it's how attention works. Every grounding rep literally retrains your brain to stay anchored in reality. That's the “rewire” your handout talks about.`,
+     ex:`🌸 Example: Heart racing over a text you keep re-reading. You start the senses game — 5 things you can see… by “2 things you can smell,” your shoulders have dropped. You're back in the room.`},
+  5:{w:`If the worry is about a <b>real problem</b>, more analyzing won't help — action will. Ask the handout's question: <i>“What is one small thing I can do today?”</i> Key word: <b>small</b>. Five minutes max. Add the step to the worry in the app, go do it, then tap <b>“I did it!”</b>`,
+     y:`Anxiety takes away your sense of control; action hands it back. A tiny step beats a perfect plan because it tells your brain: <i>we're not stuck — we're moving.</i> Real problems shrink when acted on; they grow when rehearsed.`,
+     ex:`📝 Example: “Taxes are going to be a nightmare.” Step: “Put the folder on my desk.” That's it — that counts. Momentum does the rest tomorrow.`},
+  6:{w:`Now the skill your therapist wants kept <b>light</b> — and that's exactly how we'll treat it. The idea: worries parked during the day get <b>one scheduled meeting</b> (10–15 minutes), then the window closes. Your brain learns worry has a schedule — not the whole day.<br><br>Many people find that once Skills 1–5 are strong, they barely need this. That's a success, not a failure. Use it as a tool when it helps; skip it when it doesn't.`,
+     y:`Trying to force worries away backfires — the brain replays what you suppress. Scheduling works the opposite way: the worry is honored with an appointment, so your mind can release its grip until then. “See you at 5:30” is genuinely calming to a looping brain.`,
+     ex:`⏰ Example: A worry shows up at 9 a.m. You write it down (Skill 1), maybe label it (Skill 2), and say “you get 5:30.” At 5:30 you meet it — by then, it's usually smaller.`},
+  7:{w:`You can't just switch worry off — you <b>replace</b> it. When you catch the loop pulling you back in, gently redirect to something grounding: a walk, stretching, music, water, a puzzle, texting a friend about anything else. The app keeps a menu of swaps, including a 🎲 surprise button for when you're too tired to choose.`,
+     y:`Mental habits don't get deleted — they get swapped. Every redirect is one repetition that weakens the old loop and strengthens the new path. It gets easier every time. That's not willpower or talent — that's just how brains rewire.`,
+     ex:`💗 Example: You catch the spiral at the kitchen sink. You dry your hands, drink a glass of water slowly, then stretch for two minutes. Loop interrupted. Rep counted. Brain rewired — one tiny rep at a time.`}};
+  const s=SKMETA[n-1];
+  return `<div class="card">
+  <div class="row" style="margin:0 0 4px"><button class="btn ghost" onclick="closeLesson()">← my path</button></div>
+  <div class="eyebrow">skill ${n} of 7 ${u?'':(doneFlag(n)?'· ✅ practiced':'· 🔒 preview')}</div>
+  <h2>${s[0]} ${s[1]}</h2>
+  ${u?'':'<div class="tip">🔓 This unlocks naturally once you finish Skill '+(n-1)+'’s practice — but feel free to read ahead. Knowing what’s coming is half the battle.</div>'}
+  <p><b>What it is.</b> ${L[n].w}</p>
+  <div class="why"><b>🧠 Why it works.</b><br>${L[n].y}</div>
+  <div class="quote">${L[n].ex}</div>
+  ${missionBox(n)}
+  ${n===2?'<div class="row"><button class="btn soft" style="flex:1" onclick="UI.tricks=true;render()">🏷️ Browse the 6 worry tricks</button></div>':''}
+  </div>`;
+}
+
+function sheetTricks(){
+  const EX={whatif:'“What if I mess up tomorrow?” — a question on repeat, with no answer to find.',cat:'“I will definitely get fired and lose everything.” — playing the worst-case movie.',mind:'“They all think I sounded stupid.” — guessing what others think, without proof.',always:'“I always fail.” “Nothing ever works out.” — all-or-nothing words.',self:'“I am such a disaster.” — labeling yourself instead of the thought.',future:'“This meeting will be a catastrophe.” — predicting the future like it is fact.'};
+  return `<div class="ov" onclick="if(event.target===this){UI.tricks=false;render()}"><div class="sheet">
+  <div class="handle"></div><div class="eyebrow">🏷️ the six worry tricks</div>
+  <p class="hint" style="text-align:center;margin-top:0">Say “I'm having a <i>what-if</i> thought” — naming the trick puts distance between you and the loop.</p>
+  `+LABELS.map(l=>`<div class="quote" style="margin:8px 0"><b>${l[1]} ${l[2]}</b><br><span style="font-size:13.5px;color:#514d68">${EX[l[0]]}</span></div>`).join('')+`
+  <div class="row"><button class="btn primary" style="flex:1" onclick="UI.tricks=false;render()">Got it ✓</button></div></div></div>`;
+}
+
+// ---------- skill 4 tools ----------
+function viewGround(){
+  if(BREATH)return viewBreath();
+  if(UI.gstep==='done')return `<div class="card"><div style="text-align:center;font-size:44px">🌸</div><h2 style="text-align:center">Back in the present</h2><p class="center" style="color:#514d68">That's the skill. Worry lives in the future — you just came back to now. Use it anytime, anywhere.</p><div class="row"><button class="btn primary" style="flex:1" onclick="UI.tool=null;render()">Back to my path</button><button class="btn soft" style="flex:1" onclick="UI.gstep=0;render()">Once more</button></div></div>`;
+  if(UI.gstep==='true')return `<div class="card"><div class="row" style="margin:0"><button class="btn ghost" onclick="UI.tool=null;UI.gstep=0;render()">← back</button></div><h2>🌤️ Name what is true right now</h2><p class="lesson">Worry says “what if…”. Answer with what <b>is</b> — boring, factual, present-tense is perfect.</p><textarea id="gtrue" rows="3" placeholder="e.g., I'm sitting in my room and I'm safe. The meeting is at 3. I have a plan."></textarea><div class="row"><button class="btn primary" style="flex:1" onclick="trueNow()">That is what is true ✓</button></div></div>`;
+  if(UI.gstep>0){
+    const g=G5[UI.gstep-1];
+    return `<div class="card"><div class="eyebrow">${UI.gstep} of 5</div><h2 style="text-align:center;font-size:44px;margin:8px 0">${g[0]}</h2><p class="center" style="font-size:16px">Name <b>${g[2]}</b> thing${g[2]===1?'':'s'} you can <b>${g[1]}</b> right now.</p><input placeholder="Type them, or just look around and think them — both count"><div class="row"><button class="btn primary" style="flex:1" onclick="gNext()">${UI.gstep===5?'Finish 🌸':'Next'}</button></div><div class="row" style="justify-content:center"><button class="btn ghost" onclick="UI.gstep=0;render()">back</button></div></div>`;
+  }
+  return `<div class="card"><div class="row" style="margin:0"><button class="btn ghost" onclick="UI.tool=null;render()">← my path</button></div><h2>🌸 “What if” → “What is”</h2><p class="lesson">Worry lives in the future. Calm lives in the present. Pick a tool and come back to right now:</p>
+  <div class="row"><button class="btn soft" style="flex:1" onclick="UI.gstep=1;render()">👀 5-4-3-2-1 senses game</button></div>
+  <div class="row"><button class="btn soft" style="flex:1" onclick="startBreath()">🫁 Deep belly breathing</button></div>
+  <div class="row"><button class="btn soft" style="flex:1" onclick="UI.gstep='true';render()">🌤️ Name what is true right now</button></div></div>`;
+}
+function gNext(){if(UI.gstep>=5){USE.g5++;saveUse();UI.gstep='done'}else UI.gstep++;render()}
+function trueNow(){USE.trueNow++;saveUse();UI.gstep='done';render()}
+function startBreath(){UI.gstep=0;BREATH={ph:0,left:BP[0][1]};render();setTimeout(()=>{const c=$('bc');if(c){c.style.transition='transform 4s ease';c.style.transform='scale(1.18)'}},60);BREATH.tk=setInterval(()=>{
+  if(!BREATH)return;
+  BREATH.left--;
+  if(BREATH.left<=0){BREATH.ph=(BREATH.ph+1)%3;BREATH.left=BP[BREATH.ph][1];const c=$('bc');if(c){c.style.transition='transform '+BP[BREATH.ph][1]+'s ease';c.style.transform='scale('+BP[BREATH.ph][2]+')'}}
+  const n=$('bnum');if(n)n.textContent=BREATH.left;
+  const t=$('btxt');if(t)t.textContent=BP[BREATH.ph][0];
+},1000)}
+function viewBreath(){return `<div class="card"><div class="row" style="margin:0"><button class="btn ghost" onclick="stopBreathSilent();UI.tool=null;UI.gstep=0;render()">← back</button></div><div class="eyebrow">🫁 deep belly breathing</div>
+<div class="bc" id="bc" style="transform:scale(1)"></div>
+<p class="center" style="font-size:17px;font-weight:700;margin:4px 0" id="btxt">${BP[0][0]}</p>
+<p class="center" style="color:#8a87a0">follow the circle · <b id="bnum">${BREATH.left}</b></p>
+<p class="hint" style="text-align:center">Hand on your belly — let it rise as you breathe in. A few rounds is plenty.</p>
+<div class="row"><button class="btn primary" style="flex:1" onclick="stopBreath()">I feel calmer — done ✓</button></div></div>`}
+function stopBreathSilent(){if(BREATH)clearInterval(BREATH.tk);BREATH=null}
+function stopBreath(){stopBreathSilent();USE.br++;saveUse();UI.tool=null;toast("🌸 Nice. That's a rep — your brain just practiced calm.");render()}
+
+// ---------- skill 7 ----------
+function viewHabit(){
+  return `<div class="card"><div class="row" style="margin:0"><button class="btn ghost" onclick="UI.tool=null;render()">← my path</button></div><h2>💗 Swap the loop for a habit</h2>
+  <p class="lesson">You can't just switch worry off — you <i>replace</i> it. Pick something grounding and go do it for a few minutes:</p>
+  <div class="lbls">`+SWAPS.map(x=>`<button class="chip" onclick="pickHabit('${x[0]}','${x[1]}')">${x[0]} ${x[1]}</button>`).join('')+`</div>
+  <div class="row"><button class="btn primary" style="flex:1" onclick="pickHabit()">🎲 Surprise me</button></div>
+  <p class="hint" style="text-align:center">When the worry pulls you back, gently return to the habit. That return <i>is</i> the rep that rewires your brain.</p></div>`;
+}
+function pickHabit(e,what){USE.hb++;saveUse();UI.tool=null;const s=e||'';const t=what||pick(SWAPS).slice(1)[0];toast((s?s+' ':'')+'Go do it, then come back 🌤️ That was a rep!');render()}
+
+// ---------- worries ----------
+function viewWorries(){
+  let h=`<div class="head"><div class="logo">🫧</div><div><h1>My Worries</h1><div class="sub">written down is already halfway handled</div></div>${syncChipHTML()}</div>`;
+  if(!W.length)h+=`<div class="tip"><b>How this works:</b><br>1️⃣ When a worry won't stop spinning, tap the big button and write it down.<br>2️⃣ Answer the quick check: real problem, or fear-based thought?<br>3️⃣ The path on the 🛤️ tab will tell you what to do with it next.</div>`;
   if(UI.capture){
     h+=`<div class="card"><textarea id="wtext" rows="3" autofocus placeholder="What's the worry? Your own words are perfect. e.g., What if I embarrass myself tomorrow?"></textarea>
     <div class="hint">Nobody sees this but you. Messy is fine — this is just for getting it out of your head.</div>
-    <div class="fld">🏷️ Does it have one of these names? (optional)</div>
+    <div class="fld">Quick check — real problem, or fear-based thought?</div>
+    <div class="lbls"><button class="chip ${UI.kind==='fear'?'on':''}" onclick="setKind(this,'fear')">💭 Fear-based thought</button><button class="chip ${UI.kind==='real'?'on':''}" onclick="setKind(this,'real')">✅ Real problem</button></div>
+    <div class="hint">Real problems get a small step. Fear-based ones get named and, later, scheduled. Not sure? Skip it.</div>
+    <div class="fld">🏷️ Name the trick (optional — Skill 2 will teach these)</div>
     <div class="lbls">`+LABELS.map(l=>`<button class="chip" data-l="${l[0]}" onclick="this.classList.toggle('on')">${l[1]} ${l[2]}</button>`).join('')+`</div>
-    <div class="hint">Naming the trick reminds your brain: it's a habit, not the truth.</div>
-    <div class="row"><button class="btn primary" onclick="saveWorry(1)">⏰ Save for Worry Time</button><button class="btn soft" onclick="saveWorry(0)">🫧 Just write it down</button><button class="btn ghost" onclick="UI.capture=false;render()">cancel</button></div></div>`;
+    <div class="row"><button class="btn primary" onclick="saveWorry()">🫧 Catch it</button><button class="btn ghost" onclick="UI.capture=false;UI.kind=null;render()">cancel</button></div></div>`;
   }else{
-    h+=`<div class="center"><button class="breath" onclick="UI.capture=true;render()">Catch a<br>worry</button><div class="hint">tap the moment a worry starts going round and round — don't fix it, just write it down</div></div>`;
+    h+=`<div class="center"><button class="breath" onclick="UI.capture=true;UI.kind=null;render()">Catch a<br>worry</button><div class="hint">tap the moment a worry starts going round and round — don't fix it, just write it down</div></div>`;
   }
   const f=CFG.filter;
   const cnt=s=>s==='all'?W.length:s==='open'?W.filter(w=>w.status!=='resolved').length:W.filter(w=>w.status===s).length;
@@ -140,19 +354,22 @@ function viewLog(){
   const list=W.filter(w=>f==='all'||(f==='open'?w.status!=='resolved':w.status===f));
   if(!list.length)h+=`<div class="card empty">${W.length?'Nothing in this pile right now ✓':'Nothing here yet — that big button above is the whole practice.'}</div>`;
   list.forEach(w=>{
-    h+=`<div class="card wcard" onclick="UI.modal='${w.id}';render()"><div class="wtxt">${esc(w.text)}</div><div class="wmeta"><span class="chip st ${w.status}">${stBadge(w)}</span>${(w.labels||[]).slice(0,3).map(l=>{const L=LABELS.find(x=>x[0]===l);return L?`<span class="chip st lb">${L[1]} ${L[2]}</span>`:''}).join('')}<span class="tm">${ago(w.created)}</span></div></div>`;
+    const step=(w.action&&w.action.text&&!w.action.done&&w.status!=='resolved')?'<span class="chip st lb">📝 step waiting</span>':'';
+    h+=`<div class="card wcard" onclick="UI.modal='${w.id}';render()"><div class="wtxt">${esc(w.text)}</div><div class="wmeta"><span class="chip st ${w.status}">${stBadge(w)}</span>${step}${(w.labels||[]).slice(0,3).map(l=>{const L=LABELS.find(x=>x[0]===l);return L?`<span class="chip st lb">${L[1]} ${L[2]}</span>`:''}).join('')}<span class="tm">${ago(w.created)}</span></div></div>`;
   });
   return h;
 }
-
-function saveWorry(park){
+function setKind(el,k){UI.kind=k;[...el.parentNode.children].forEach(c=>c.classList.remove('on'));el.classList.add('on')}
+function saveWorry(){
   const t=$('wtext')?$('wtext').value.trim():'';
   if(!t){toast('Type even one line first — it helps, promise');return}
-  const labels=[...document.querySelectorAll('.lbls .chip.on')].map(c=>c.dataset.l);
-  W.unshift({id:uid(),text:t,labels:labels,status:park?'parked':'active',resolution:null,created:Date.now()});
-  save();UI.capture=false;render();
-  if(park){const s=pick(SWAPS);toast('Saved for Worry Time ⏰ Meanwhile, try: '+s[0]+' '+s[1])}
-  else toast('Out of your head and onto the page ✓ That alone helps.');
+  const labels=[...document.querySelectorAll('.lbls .chip.on')].map(c=>c.dataset.l).filter(Boolean);
+  const kind=UI.kind;UI.kind=null;
+  const id=uid();
+  W.unshift({id,text:t,labels,status:'active',resolution:null,kind,created:Date.now()});
+  save();UI.capture=false;
+  if(kind==='real'){UI.modal=id;render();toast('Real problem? Add your one small step 👣');return}
+  render();toast('Out of your head and onto the page ✓ That alone helps.');
 }
 
 function sheetWorry(){
@@ -161,78 +378,81 @@ function sheetWorry(){
   return `<div class="ov" onclick="if(event.target===this)closeSheet()"><div class="sheet">
   <div class="handle"></div><div class="eyebrow">a thought, not a fact</div>
   <div class="quote">${esc(w.text)}</div>
+  ${w.kind==='real'?'<div class="swap" style="margin:0 0 4px">✅ You marked this a <b>real problem</b> — so it gets action, not just worry.</div>':''}
   <div class="fld">🏷️ Name the trick (optional)</div>
   <div class="lbls">`+LABELS.map(l=>`<button class="chip ${labels.includes(l[0])?'on':''}" onclick="tglLbl('${w.id}','${l[0]}')">${l[1]} ${l[2]}</button>`).join('')+`</div>
-  <div class="row"><button class="btn soft" onclick="park('${w.id}')">${w.status==='parked'?'↩️ Not waiting anymore':'⏰ Save for Worry Time'}</button><button class="btn primary" onclick="UI.challenge='${w.id}';UI.modal=null;render()">⚖️ Talk back to it</button></div>
+  <div class="row"><button class="btn primary" onclick="UI.challenge='${w.id}';UI.modal=null;render()">⚖️ Check the facts</button><button class="btn soft" onclick="park('${w.id}')">${w.status==='parked'?'↩️ Not waiting anymore':'⏰ Save for Worry Time'}</button></div>
+  <div class="fld">📝 One small step for today (5 minutes max)</div>
+  <div class="row" style="flex-wrap:nowrap"><input id="actin" style="margin:0" value="${esc(w.action?w.action.text:'')}" placeholder="e.g., send one email · ask one question"><button class="btn soft" onclick="saveAct('${w.id}')">save</button></div>
+  ${w.action&&w.action.text?`<div class="row"><span class="chip ${w.action.done?'st resolved':'st lb'}">${w.action.done?'✅ step done':'📝 step waiting'}</span>${!w.action.done&&w.status!=='resolved'?`<button class="btn green" onclick="doneAct('${w.id}')">✅ I did it!</button>`:''}</div>`:''}
+  ${w.ch?`<div class="swap"><b>🌤️ What I figured out:</b> ${esc(w.ch.is||'—')}</div>`:''}
   ${w.status!=='resolved'?`<div class="row"><button class="btn ghost" onclick="resolve('${w.id}','manual')">✅ I feel okay about this one now</button></div>`:''}
-  ${w.ch?`<div class="swap"><b>🌤️ What I figured out:</b> ${esc(w.ch.is||'—')}<br>${w.ch.next?'<b>👣 My next step:</b> '+esc(w.ch.next):''}</div>`:''}
   <div class="row" style="justify-content:center"><button class="btn ghost" onclick="del('${w.id}')">🗑️ delete this worry</button></div>
   </div></div>`;
 }
 function tglLbl(id,l){const w=W.find(x=>x.id===id);if(!w)return;w.labels=w.labels||[];w.labels=w.labels.includes(l)?w.labels.filter(x=>x!==l):[...w.labels,l];save();render()}
 function park(id){const w=W.find(x=>x.id===id);if(!w)return;w.status=w.status==='parked'?'active':'parked';save();render()}
-function resolve(id,r){const w=W.find(x=>x.id===id);if(!w)return;w.status='resolved';w.resolution=r;save();render();toast("Marked done ✓ Nice work.")}
+function resolve(id,r){const w=W.find(x=>x.id===id);if(!w)return;w.status='resolved';w.resolution=r;save();render();toast('Marked done ✓ Nice work.')}
 function del(id){W=W.filter(x=>x.id!==id);save();closeSheet()}
 function closeSheet(){UI.modal=null;UI.challenge=null;render()}
+function saveAct(id){const w=W.find(x=>x.id===id);if(!w)return;const v=$('actin')?$('actin').value.trim():'';if(!v){toast('Type the small step first — even tiny counts');return}w.action={text:v,done:w.action?w.action.done:false};save();render();toast('Step saved 👣 Five minutes, then stop.')}
+function doneAct(id){const w=W.find(x=>x.id===id);if(!w)return;w.action.done=true;w.status='resolved';w.resolution='action';save();render();toast('✅ You did the thing. Worries shrink with action.')}
 
 function sheetChallenge(){
   const w=W.find(x=>x.id===UI.challenge);if(!w)return'';
-  const c=w.ch||{for:'',against:'',is:'',next:''};
+  const c=w.ch||{for:'',against:'',is:''};
   return `<div class="ov" onclick="if(event.target===this)closeSheet()"><div class="sheet">
-  <div class="handle"></div><div class="eyebrow">⚖️ a little fact-check</div>
+  <div class="handle"></div><div class="eyebrow">⚖️ check the facts</div>
   <div class="quote">${esc(w.text)}</div>
   <div class="tip">Worries hate specific questions. Answer like a detective — short and factual is perfect.</div>
-  <div class="fld">🧐 What makes this worry feel true? (facts only)</div><textarea id="cf" rows="2" placeholder="e.g., I haven't finished preparing yet">${esc(c.for)}</textarea>
-  <div class="fld">🌤️ What says it might actually be fine?</div><textarea id="ca" rows="2" placeholder="e.g., I've done this before and it went okay">${esc(c.against)}</textarea>
-  <div class="fld">🌈 The fairer version — say it like you'd comfort a friend</div><textarea id="ci" rows="2" placeholder="e.g., It might be awkward, and I can handle awkward">${esc(c.is)}</textarea>
-  <div class="fld">👣 One small step I can take today (5 minutes max)</div><input id="cn" value="${esc(c.next)}" placeholder="e.g., send one email · ask one question · look it up once">
+  <div class="fld">🧐 What proof do I have that this will actually happen?</div><textarea id="cf" rows="2" placeholder="e.g., Honestly? None yet — it's just a feeling">${esc(c.for)}</textarea>
+  <div class="fld">🤔 Have I faced something similar before? What happened?</div><textarea id="ca" rows="2" placeholder="e.g., Yes — last time it went fine, I was just nervous">${esc(c.against)}</textarea>
+  <div class="fld">🌈 What's a more balanced way to see this?</div><textarea id="ci" rows="2" placeholder="e.g., It might be awkward, and I can handle awkward">${esc(c.is)}</textarea>
   <div class="row"><button class="btn primary" onclick="saveCh('${w.id}')">Save what I figured out ✓</button><button class="btn ghost" onclick="closeSheet()">close</button></div>
   </div></div>`;
 }
 function saveCh(id){
   const w=W.find(x=>x.id===id);if(!w)return;
-  w.ch={for:$('cf').value.trim(),against:$('ca').value.trim(),is:$('ci').value.trim(),next:$('cn').value.trim()};
-  const wasWin=SES&&SES.running;
+  w.ch={for:$('cf').value.trim(),against:$('ca').value.trim(),is:$('ci').value.trim()};
   w.status='resolved';w.resolution='challenged';save();
   UI.challenge=null;UI.modal=null;
-  if(wasWin){SES.stats.work++;advance()}
-  render();toast("Saved ✓ That worry just got smaller.");
+  render();toast('Saved ✓ That worry just got smaller.');
 }
 
+// ---------- skill 6: window (kept light) ----------
 function viewWindow(){
   const parked=W.filter(w=>w.status==='parked');
+  const top=`<div class="row" style="margin:0"><button class="btn ghost" onclick="CFG.tab='path';saveCfg();render()">← my path</button></div><p class="hint" style="text-align:center;margin:4px 0 0">Skill 6 — no pressure, this tool is here whenever you want it.</p>`;
   if(SES&&SES.done){
     const d=SES.done;
-    return `<div class="card"><div style="text-align:center;font-size:44px">🌙</div><h2 style="text-align:center;margin:4px 0">Worry Time is over</h2>
+    return `<div class="card">${top}<div style="text-align:center;font-size:44px">🌙</div><h2 style="text-align:center;margin:4px 0">Worry Time is over</h2>
     <p class="center" style="color:#514d68">${d.reason==='time'?"Time's up — and that's the whole point. The window closed, and the worries stay in it.":d.reason==='done'?'You met every single worry on the list. That is a genuinely good day.':'You closed it early — totally allowed. You are the one in charge here.'}</p>
     <div class="stat"><div><b>${d.rel}</b><span>🎈 let go</span></div><div><b>${d.work}</b><span>⚖️ talked back</span></div><div><b>${d.keep}</b><span>⏳ next time</span></div></div>
-    ${d.keep?'<p style="text-align:center;color:#8a87a0;font-size:13.5px">The rest wait for tomorrow\'s window. Choosing to wait on purpose <i>is</i> the method working — not failing.</p>':''}
     <div class="swap"><b>Still feel the pull to keep worrying? Do this instead:</b><br>${d.swap[0]} ${d.swap[1]}</div>
-    <button class="btn primary" style="width:100%" onclick="SES=null;render()">Done — back to my day 🌤️</button></div>`;
+    <button class="btn primary" style="width:100%" onclick="SES=null;render()">Done</button></div>`;
   }
   if(SES&&SES.running){
     const w=SES.queue[SES.idx];
-    return `<div class="card"><div class="timer" id="tleft">${mmss(Math.max(0,Math.round((SES.endsAt-Date.now())/1e3)))}</div>
+    return `<div class="card">${top}<div class="timer" id="tleft">${mmss(Math.max(0,Math.round((SES.endsAt-Date.now())/1e3)))}</div>
     <div class="bar"><i id="tbar" style="width:100%"></i></div>
     <p class="center" style="color:#8a87a0;font-size:13px">Worry ${SES.idx+1} of ${SES.queue.length} · one at a time, that's all</p>
     ${w?`<div class="quote">${esc(w.text)}</div>
-    <p class="center" style="color:#9b98b0;font-size:12.5px">Look it in the eye for a moment. Does it still deserve the space?</p>
-    <div class="row"><button class="btn green" onclick="release('${w.id}')">🎈 It feels lighter — let it go</button><button class="btn primary" onclick="UI.challenge='${w.id}';render()">⚖️ Still heavy — talk back to it</button></div>
+    <div class="row"><button class="btn green" onclick="release('${w.id}')">🎈 It feels lighter — let it go</button><button class="btn primary" onclick="UI.challenge='${w.id}';render()">⚖️ Check the facts</button></div>
     <div class="row"><button class="btn ghost" onclick="keep()">⏭ Not today — keep it for next time</button></div>`:''}
     <div class="row" style="justify-content:center"><button class="btn ghost" onclick="finish('early')">close Worry Time early</button></div></div>`;
   }
-  return `<div class="card"><h2>Your daily Worry Time ⏰</h2>
-  <p style="color:#514d68;font-size:14.5px;line-height:1.55">You don't have to wrestle worries the moment they appear. Write them down during the day, then meet them all here — one appointment, one window. Most arrive already smaller. That's not luck; that's what worries do when you stop feeding them all day.</p>
+  return `<div class="card">${top}<h2>The Worry Window ⏰</h2>
+  <p class="lesson">Worries parked during the day get one scheduled meeting here — then the window closes. Your brain learns that worry has a schedule, not the whole day.</p>
   <div class="fld">⏰ What time should your Worry Time be?</div><input type="time" value="${CFG.time}" onchange="CFG.time=this.value;saveCfg()">
   <div class="fld">⏳ How long should it last?</div><div class="dur">${[5,10,15,20,30].map(d=>`<button class="chip ${CFG.dur===d?'on':''}" onclick="CFG.dur=${d};saveCfg();render()">${d}m</button>`).join('')}</div>
-  <div class="tip">💡 Tip: set a daily phone alarm for this time. After a week or two, the habit runs itself.</div>
+  <div class="tip">💡 Tip: set a daily phone alarm for this time until the habit sticks.</div>
   <button class="btn primary" style="width:100%" onclick="startWin()">${parked.length?'Open my Worry Time · '+parked.length+' waiting':'Open my Worry Time'}</button>
-  ${parked.length?'':'<p class="center" style="color:#8a87a0;font-size:13px;margin-top:10px">Nothing waiting right now. When a worry shows up today, tap the big button on the Worries tab and save it here.</p>'}</div>`;
+  ${parked.length?'':'<p class="center" style="color:#8a87a0;font-size:13px;margin-top:10px">Nothing waiting. Worries you “Save for Worry Time” will gather here.</p>'}</div>`;
 }
-
 function startWin(){
   const parked=W.filter(w=>w.status==='parked');
   if(!parked.length){toast("Nothing waiting yet — save worries during the day and they'll be here.");return}
+  USE.win++;saveUse();
   SES={queue:parked.slice(),idx:0,total:CFG.dur*60,endsAt:Date.now()+CFG.dur*60000,stats:{rel:0,work:0,keep:0},running:true,done:null};
   render();startTick();
 }
@@ -251,31 +471,94 @@ function keep(){SES.stats.keep++;advance()}
 function advance(){if(!SES)return;SES.idx++;if(SES.idx>=SES.queue.length)finish('done');else render()}
 function finish(reason){if(!SES)return;SES.running=false;SES.done={rel:SES.stats.rel,work:SES.stats.work,keep:SES.stats.keep,total:SES.queue.length,reason,swap:pick(SWAPS)};clearInterval(TICK);render()}
 
+// ---------- progress ----------
 function viewStats(){
   const total=W.length,resolved=W.filter(w=>w.status==='resolved').length,released=W.filter(w=>w.status==='resolved'&&w.resolution==='released').length,parked=W.filter(w=>w.status==='parked').length;
+  const acts=W.filter(w=>w.action&&w.action.done).length;
   const days=[];for(let i=6;i>=0;i--){const d=new Date();d.setHours(0,0,0,0);d.setDate(d.getDate()-i);days.push(d)}
   const counts=days.map(d=>W.filter(w=>w.created>=d.getTime()&&w.created<d.getTime()+864e5).length);
   const max=Math.max(1,...counts);
   const lc={};W.forEach(w=>(w.labels||[]).forEach(l=>lc[l]=(lc[l]||0)+1));
   const top=Object.entries(lc).sort((a,b)=>b[1]-a[1]).slice(0,3);
-  let h=`<div class="stat"><div><b>${total}</b><span>written down</span></div><div><b>${resolved}</b><span>finished with</span></div><div><b>${parked}</b><span>waiting now</span></div></div>`;
-  if(released)h+=`<div class="tip">🎈 ${released} ${released===1?'worry faded':'worries faded'} on their own by the time you sat down with them. That's what worries do when you stop feeding them all day.</div>`;
-  h+=`<div class="card"><h3>Your week at a glance</h3><div class="week">`+counts.map((c,i)=>`<div><em>${c||''}</em><i style="height:${(c/max)*100}%"></i><b>${'SMTWTFS'[days[i].getDay()]}</b></div>`).join('')+`</div><p class="hint" style="text-align:center">Just a record — never a scorecard. 🌤️</p></div>`;
-  h+=`<div class="card"><h3>Your most common worry tricks</h3>`+(top.length?`<div class="lbls">`+top.map(([l,n])=>{const L=LABELS.find(x=>x[0]===l);return L?`<span class="chip" style="background:#4f46e5;color:#fff;border-color:#4f46e5;cursor:default">${L[1]} ${L[2]} ×${n}</span>`:''}).join('')+`</div>`:`<p style="color:#8a87a0;font-size:14px">Open any worry and give it a nickname — after a few, your personal pattern shows up here.</p>`)+`<p style="color:#9b98b0;font-size:12.5px;margin-top:8px">Spotting the pattern is halfway to breaking it. 💪</p></div>`;
+  let h=`<div class="head"><div class="logo">🌤️</div><div><h1>Progress</h1><div class="sub">a record, never a scorecard</div></div>${syncChipHTML()}</div>`;
+  h+=`<div class="card"><b>Your path: ${doneCount()} of 7 skills practiced</b><div class="pbar"><i style="width:${Math.round(doneCount()/7*100)}%"></i></div><div class="lbls" style="margin-top:10px">${[1,2,3,4,5,6,7].map(n=>`<span class="chip st lb">${doneFlag(n)?'✅':'⬜'} ${SKMETA[n-1][0]} ${SKMETA[n-1][1]}</span>`).join('')}</div></div>`;
+  h+=`<div class="stat"><div><b>${total}</b><span>written down</span></div><div><b>${resolved}</b><span>finished with</span></div><div><b>${parked}</b><span>waiting now</span></div></div>`;
+  if(acts)h+=`<div class="swap">👣 <b>${acts} small step${acts===1?'':'s'} taken</b> — action is the skill that shrinks real problems.</div>`;
+  if(released)h+=`<div class="tip">🎈 ${released} ${released===1?'worry faded':'worries faded'} on its own by the time you sat down with it. That's what worries do when you stop feeding them all day.</div>`;
+  if(USE.g5||USE.br||USE.trueNow||USE.hb)h+=`<div class="card"><h3>Skill reps so far</h3><div class="lbls">${USE.g5?`<span class="chip st lb">👀 Senses game ×${USE.g5}</span>`:''}${USE.br?`<span class="chip st lb">🫁 Breathing ×${USE.br}</span>`:''}${USE.trueNow?`<span class="chip st lb">🌤️ True-right-now ×${USE.trueNow}</span>`:''}${USE.hb?`<span class="chip st lb">💗 Habit swaps ×${USE.hb}</span>`:''}</div><p class="hint">Every rep retrains the loop. That's the whole game. 💪</p></div>`;
+  h+=`<div class="card"><h3>Your week at a glance</h3><div class="week">`+counts.map((c,i)=>`<div><em>${c||''}</em><i style="height:${(c/max)*100}%"></i><b>${'SMTWTFS'[days[i].getDay()]}</b></div>`).join('')+`</div></div>`;
+  h+=`<div class="card"><h3>Your most common worry tricks</h3>`+(top.length?`<div class="lbls">`+top.map(([l,n])=>{const L=LABELS.find(x=>x[0]===l);return L?`<span class="chip" style="background:#4f46e5;color:#fff;border-color:#4f46e5;cursor:default">${L[1]} ${L[2]} ×${n}</span>`:''}).join('')+`</div>`:`<p style="color:#8a87a0;font-size:14px">Label a few worries and your personal pattern will surface here.</p>`)+`</div>`;
   return h;
 }
 
-function viewMethod(){
-  return `<div class="card"><h2>How it works — the friendly version</h2><ol class="steps">
-  <li><b>🫧 Notice the spin.</b> The moment you catch the same thought going round and round, open this app and type it out. Even one sentence. Getting it out of your head makes it quieter right away.</li>
-  <li><b>🏷️ Give the trick a nickname.</b> Is it a "what if…?" spiral? A worst-case movie? Guessing what other people think? Naming it reminds you: this is a brain habit, not the truth about your life.</li>
-  <li><b>⏰ Give it an appointment.</b> Tap "Save for Worry Time." You're not ignoring the worry — you're promising it a proper meeting later. Brains calm down once they know their turn is coming.</li>
-  <li><b>⚖️ At Worry Time, question it.</b> Ask: What are the facts here? What would I say to a friend who told me this? Worries sound very convincing at 2 a.m. — and far less scary in daylight.</li>
-  <li><b>🌤️ Write the fairer version.</b> Swap "what if it all goes wrong?" for what's actually true. Example: "The meeting might be awkward, and I've survived awkward before."</li>
-  <li><b>👣 Take one tiny step.</b> Worries shrink with action. Send the email, ask the question, look it up once — five minutes, then stop.</li>
-  <li><b>🔁 Close the window.</b> When time's up, you're done — on purpose. If your brain tries to sneak back in, give it a swap: walk, song, water, stretch. It gets easier every time. Promise.</li>
-  </ol></div>`;
+// ---------- guide ----------
+function viewGuide(){
+  return `${sb?'':'<div class="tip">☁️ <b>Local-only mode.</b> Add your Supabase URL and key at the top of the code to unlock sign-in and cross-device sync.</div>'}
+  <div class="card"><div class="head" style="padding-top:0"><div class="logo">📖</div><div><h1>The Guide</h1><div class="sub">“How to Train Your Brain Out of Worry” — at a glance</div></div></div>
+  <ol class="steps">
+  <li><b>🌀 Catch the worry loop.</b> Notice the spiral. Ask: “Is this a real problem, or a fear-based thought?”</li>
+  <li><b>🏷️ Name the thought, not yourself.</b> “I'm having an anxious thought” — distance, not identity.</li>
+  <li><b>⚖️ Check the facts.</b> Proof? Past experience? A balanced view? Worries lose power when examined.</li>
+  <li><b>🌸 Shift “what if” → “what is.”</b> Senses game, belly breathing, name what's true right now.</li>
+  <li><b>📝 Make a small action plan.</b> “What is one small thing I can do today?” Action restores control.</li>
+  <li><b>⏰ Keep a daily Worry Window.</b> Scheduled minutes, not the whole day. Keep this one light.</li>
+  <li><b>💗 Replace rumination with a helpful habit.</b> Stretch, walk, music, water. Swap, don't resist.</li>
+  </ol>
+  <p class="hint">Each skill has its own full lesson on the 🛤️ Path tab — with examples and the “why it works.”</p></div>`;
 }
+
+// ---------- welcome & auth ----------
+function sheetWelcome(){
+  return `<div class="ov"><div class="sheet">
+  <div class="handle"></div><div class="eyebrow">welcome 👋</div>
+  <h2 style="text-align:center">Learn to train your brain out of worry — one skill at a time</h2>
+  <p style="color:#514d68;font-size:14.5px;line-height:1.6">This app is built on your handout's <b>7 skills</b>, and it teaches them <b>in order, one at a time</b>:<br><br>📖 Each skill gets a short lesson — what it is, why it works, an example.<br>🎯 Then one small practice mission on a real worry of yours.<br>✅ Finish it, and the next skill unlocks.<br><br>The Worry Window is Skill 6, near the end, kept light — exactly like your therapist asked. Start at Skill 1 and the path does the rest. There's no wrong way to use this.</p>
+  ${sb?'<div class="swap">☁️ Want everything on every device? Tap <b>“Sign in to sync”</b> at the top of the Path tab anytime.</div>':''}
+  <div class="row"><button class="btn primary" style="flex:1" onclick="CFG.hi=true;saveCfg();UI.welcome=false;render()">Start Skill 1 🌀</button></div>
+  </div></div>`;
+}
+function sheetAuth(){
+  if(USER)return `<div class="ov" onclick="if(event.target===this)UI.auth=false;render()"><div class="sheet">
+  <div class="handle"></div><div class="eyebrow">☁️ your account</div>
+  <div class="quote" style="text-align:center">${esc(USER.email)}<br><span style="font-size:13px;color:#8a87a0">${chipTxt()}</span></div>
+  <p class="hint" style="text-align:center">Your worries and your place on the path are saved to your account and follow you to any device you sign in on.</p>
+  <div class="row"><button class="btn soft" style="flex:1" onclick="UI.auth=false;render()">close</button><button class="btn ghost" onclick="sb.auth.signOut()">sign out</button></div>
+  </div></div>`;
+  return `<div class="ov" onclick="if(event.target===this)UI.auth=false;render()"><div class="sheet">
+  <div class="handle"></div><div class="eyebrow">☁️ sync across devices</div>
+  <h2 style="text-align:center">Sign in</h2>
+  <p class="hint" style="text-align:center;margin-top:4px">Use the <b>same email and password on every device</b>, and everything follows you.</p>
+  <div class="fld">Email</div><input id="aemail" type="email" autocomplete="email" placeholder="you@example.com">
+  <div class="fld">Password (6+ characters)</div><input id="apass" type="password" autocomplete="current-password" placeholder="••••••••" onkeydown="if(event.key==='Enter')doAuth('in')">
+  <div class="aerr" id="aerr"></div>
+  <div class="row"><button class="btn primary" style="flex:1" onclick="doAuth('in')">Sign in</button><button class="btn soft" style="flex:1" onclick="doAuth('up')">Create account</button></div>
+  <p class="hint" style="text-align:center">First time? “Create account” sets everything up.</p>
+  <div class="row" style="justify-content:center"><button class="btn ghost" onclick="UI.auth=false;render()">not now</button></div>
+  </div></div>`;
+}
+function authErr(m){const el=$('aerr');if(el)el.textContent=m}
+async function doAuth(mode){
+  if(!sb)return;
+  const email=$('aemail').value.trim().toLowerCase(),pass=$('apass').value;
+  if(!email||!pass){authErr('Please fill in both your email and a password.');return}
+  authErr('');
+  try{
+    if(mode==='up'){
+      const r=await sb.auth.signUp({email,password:pass});
+      if(r.data&&r.data.user&&!r.session)authErr('Almost there! Check your email inbox for a confirmation link, then sign in here.');
+    }else{
+      const{error}=await sb.auth.signInWithPassword({email,password:pass});
+      if(error)throw error;
+    }
+  }catch(e){authErr(e.message)}
+}
+
+if(sb)sb.auth.onAuthStateChange((ev,sess)=>{
+  const was=USER;
+  USER=sess?.user||null;
+  if(USER&&!was)pullRemote(ev==='SIGNED_IN');
+  else if(!USER&&ev==='SIGNED_OUT'){SYNC='local';UI.auth=false;toast('Signed out — your data stays safe on this device.');render()}
+});
 
 render();
 </script>
