@@ -79,6 +79,7 @@ ol.steps{padding-left:24px;line-height:1.55;font-size:14px}ol.steps li{margin:10
 .mission{background:#f7f6fb;border:1.5px dashed #d9d6ee;border-radius:14px;padding:12px 14px;margin:12px 0 4px}
 .lesson p{line-height:1.6;font-size:14.5px;color:#514d68;margin:8px 0}
 .aerr{color:#dc2626;font-size:13.5px;min-height:18px;margin:6px 0 2px;text-align:center}
+@media(min-width:640px){.ov{align-items:center}.sheet{border-radius:24px}}
 </style>
 </head>
 <body>
@@ -518,13 +519,13 @@ function sheetWelcome(){
   </div></div>`;
 }
 function sheetAuth(){
-  if(USER)return `<div class="ov" onclick="if(event.target===this)UI.auth=false;render()"><div class="sheet">
+  if(USER)return `<div class="ov" onclick="if(event.target===this){UI.auth=false;render()}"><div class="sheet">
   <div class="handle"></div><div class="eyebrow">☁️ your account</div>
   <div class="quote" style="text-align:center">${esc(USER.email)}<br><span style="font-size:13px;color:#8a87a0">${chipTxt()}</span></div>
   <p class="hint" style="text-align:center">Your worries and your place on the path are saved to your account and follow you to any device you sign in on.</p>
   <div class="row"><button class="btn soft" style="flex:1" onclick="UI.auth=false;render()">close</button><button class="btn ghost" onclick="sb.auth.signOut()">sign out</button></div>
   </div></div>`;
-  return `<div class="ov" onclick="if(event.target===this)UI.auth=false;render()"><div class="sheet">
+  return `<div class="ov" onclick="if(event.target===this){UI.auth=false;render()}"><div class="sheet">
   <div class="handle"></div><div class="eyebrow">☁️ sync across devices</div>
   <h2 style="text-align:center">Sign in</h2>
   <p class="hint" style="text-align:center;margin-top:4px">Use the <b>same email and password on every device</b>, and everything follows you.</p>
