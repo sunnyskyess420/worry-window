@@ -8,77 +8,114 @@
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <style>
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
-body{margin:0 auto;max-width:560px;padding:16px 16px 120px;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;background:radial-gradient(900px 600px at 90% -10%,#ece9ff,rgba(236,233,255,0)),radial-gradient(700px 500px at -10% 100%,#e2f5f0,rgba(226,245,240,0)),#f7f6fb;color:#312e46}
+:root{
+--bg:radial-gradient(900px 600px at 90% -10%,#ece9ff,rgba(236,233,255,0)),radial-gradient(700px 500px at -10% 100%,#e2f5f0,rgba(226,245,240,0)),#f7f6fb;
+--ink:#312e46;--card:#fff;--card-brd:#eceaf4;--muted:#8a87a0;--faint:#9b98b0;--lesson-ink:#514d68;
+--field:#fbfaff;--field-brd:#e4e2f0;--chip-bg:#fff;--chip-brd:#e4e2f0;--chip-ink:#5d5a75;
+--soft-bg:#eef0ff;--soft-ink:#4338ca;
+--quote-bg:#f7f6fb;--quote-brd:#a5b4fc;
+--tip-bg:#fff7e6;--tip-brd:#f5e3c0;--tip-ink:#92400e;
+--swap-bg:#ecfdf5;--swap-brd:#c6ecdc;--swap-ink:#065f46;
+--why-bg:#eef0ff;--why-brd:#dbe0ff;--why-ink:#4338ca;
+--well:#f7f6fb;--mission-brd:#d9d6ee;
+--st-a-bg:#fff4e0;--st-a-brd:#f5e3c0;--st-a-ink:#b45309;
+--st-p-bg:#eef0ff;--st-p-brd:#dbe0ff;--st-p-ink:#4338ca;
+--st-r-bg:#e8f8f2;--st-r-brd:#c6ecdc;--st-r-ink:#047857;
+--st-l-bg:#f7f6fb;--st-l-ink:#5d5a75;
+--track:#e9e7f5;--tabs-bg:rgba(255,255,255,.92);--tabs-brd:#eceaf4;
+--toast-bg:#312e46;--toast-ink:#fff;--err:#dc2626;
+--cur-bg:linear-gradient(135deg,#f3f2ff,#fff 65%);--cur-brd:#c7d2fe;--skic:#f7f6fb;
+}
+body.dark{
+--bg:radial-gradient(900px 600px at 90% -10%,#262143,rgba(38,33,67,0)),radial-gradient(700px 500px at -10% 100%,#14322c,rgba(20,50,44,0)),#17151f;
+--ink:#e8e6f2;--card:#211e2e;--card-brd:#332f47;--muted:#9d99b5;--faint:#7f7b99;--lesson-ink:#c3c0d6;
+--field:#1a1824;--field-brd:#3a3552;--chip-bg:#262238;--chip-brd:#3a3552;--chip-ink:#c0bcdc;
+--soft-bg:#2c2849;--soft-ink:#c7d2fe;
+--quote-bg:#1a1824;--quote-brd:#6366f1;
+--tip-bg:#2b2312;--tip-brd:#4d3d1a;--tip-ink:#fbbf24;
+--swap-bg:#0e2a1f;--swap-brd:#1e4d38;--swap-ink:#6ee7b7;
+--why-bg:#252247;--why-brd:#3d3a6e;--why-ink:#c7d2fe;
+--well:#1a1824;--mission-brd:#3a3552;
+--st-a-bg:#33270f;--st-a-brd:#57431a;--st-a-ink:#fbbf24;
+--st-p-bg:#2c2849;--st-p-brd:#3d3a6e;--st-p-ink:#a5b4fc;
+--st-r-bg:#0e2a1f;--st-r-brd:#1e4d38;--st-r-ink:#34d399;
+--st-l-bg:#262238;--st-l-ink:#c0bcdc;
+--track:#332f47;--tabs-bg:rgba(23,21,31,.92);--tabs-brd:#332f47;
+--toast-bg:#e8e6f2;--toast-ink:#312e46;--err:#f87171;
+--cur-bg:linear-gradient(135deg,#2c2849,#211e2e 65%);--cur-brd:#4a4680;--skic:#1a1824;
+color-scheme:dark;
+}
+body{margin:0 auto;max-width:560px;padding:16px 16px 120px;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;background:var(--bg);color:var(--ink);transition:background .25s,color .25s}
 .head{display:flex;gap:12px;align-items:center;padding:14px 2px}
 .logo{width:46px;height:46px;border-radius:14px;background:linear-gradient(135deg,#818cf8,#14b8a6);display:flex;align-items:center;justify-content:center;font-size:24px;box-shadow:0 8px 20px rgba(99,102,241,.3)}
 h1{font-size:21px;margin:0}h2{margin:4px 0}h3{margin:0 0 6px}
-.sub{font-size:12px;color:#8a87a0}
-.card{background:#fff;border:1px solid #eceaf4;border-radius:18px;padding:16px;margin:10px 0;box-shadow:0 6px 24px rgba(62,55,130,.06)}
-.skill{display:flex;gap:12px;align-items:center;background:#fff;border:1px solid #eceaf4;border-radius:18px;padding:14px;margin:10px 0;box-shadow:0 6px 24px rgba(62,55,130,.06);cursor:pointer}
+.sub{font-size:12px;color:var(--muted)}
+.card{background:var(--card);border:1px solid var(--card-brd);border-radius:18px;padding:16px;margin:10px 0;box-shadow:0 6px 24px rgba(62,55,130,.06)}
+.skill{display:flex;gap:12px;align-items:center;background:var(--card);border:1px solid var(--card-brd);border-radius:18px;padding:14px;margin:10px 0;box-shadow:0 6px 24px rgba(62,55,130,.06);cursor:pointer}
 .skill:active{transform:scale(.985)}
-.skill.cur{border-color:#c7d2fe;background:linear-gradient(135deg,#f3f2ff,#fff 65%);box-shadow:0 8px 28px rgba(79,70,229,.14)}
+.skill.cur{border-color:var(--cur-brd);background:var(--cur-bg);box-shadow:0 8px 28px rgba(79,70,229,.14)}
 .skill.lock{opacity:.72}
-.skic{width:44px;height:44px;border-radius:13px;background:#f7f6fb;display:flex;align-items:center;justify-content:center;font-size:22px;flex-shrink:0}
+.skic{width:44px;height:44px;border-radius:13px;background:var(--skic);display:flex;align-items:center;justify-content:center;font-size:22px;flex-shrink:0}
 .skill b{display:block;font-size:15px}
-.skill p{margin:2px 0 0;font-size:12.5px;color:#8a87a0;line-height:1.4}
-.skst{margin-left:auto;font-size:11px;font-weight:700;color:#8a87a0;flex-shrink:0;text-align:right}
+.skill p{margin:2px 0 0;font-size:12.5px;color:var(--muted);line-height:1.4}
+.skst{margin-left:auto;font-size:11px;font-weight:700;color:var(--muted);flex-shrink:0;text-align:right}
 .btn{border:none;border-radius:13px;padding:12px 16px;font-size:15px;font-weight:600;cursor:pointer;font-family:inherit}
 .primary{background:linear-gradient(135deg,#6366f1,#4f46e5);color:#fff;box-shadow:0 8px 20px rgba(79,70,229,.3)}
 .green{background:linear-gradient(135deg,#10b981,#059669);color:#fff}
-.soft{background:#eef0ff;color:#4338ca}
-.ghost{background:none;color:#8a87a0}
+.soft{background:var(--soft-bg);color:var(--soft-ink)}
+.ghost{background:none;color:var(--muted)}
 .row{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}
-textarea,input{width:100%;border:1.5px solid #e4e2f0;border-radius:12px;padding:12px;font:inherit;font-size:15px;background:#fbfaff;margin:6px 0;resize:vertical;color:#312e46}
+textarea,input{width:100%;border:1.5px solid var(--field-brd);border-radius:12px;padding:12px;font:inherit;font-size:15px;background:var(--field);margin:6px 0;resize:vertical;color:var(--ink)}
 input[type=time]{width:auto}
-.chip{border:1px solid #e4e2f0;background:#fff;border-radius:99px;padding:6px 12px;font-size:12.5px;cursor:pointer;color:#5d5a75;font-family:inherit}
+.chip{border:1px solid var(--chip-brd);background:var(--chip-bg);border-radius:99px;padding:6px 12px;font-size:12.5px;cursor:pointer;color:var(--chip-ink);font-family:inherit}
 .chip.on{background:#4f46e5;border-color:#4f46e5;color:#fff}
 .lbls,.filters,.dur{display:flex;flex-wrap:wrap;gap:6px;margin:8px 0}
 .breath{width:180px;height:180px;border-radius:50%;border:none;cursor:pointer;background:radial-gradient(circle at 32% 28%,#a5b4fc,#6366f1 58%,#4f46e5);color:#fff;font-size:19px;font-weight:700;line-height:1.3;box-shadow:0 18px 46px rgba(99,102,241,.38);animation:b 5.5s ease-in-out infinite;font-family:inherit}
 @keyframes b{0%,100%{transform:scale(1)}50%{transform:scale(1.06)}}
 .bc{width:150px;height:150px;border-radius:50%;margin:14px auto;background:radial-gradient(circle at 32% 28%,#a5b4fc,#6366f1 58%,#4f46e5);transition:transform 4s ease;box-shadow:0 14px 40px rgba(99,102,241,.35)}
 .center{text-align:center;padding:18px 0}
-.hint{color:#9b98b0;font-size:13px;margin-top:14px}
+.hint{color:var(--faint);font-size:13px;margin-top:14px}
 .wcard{cursor:pointer}.wcard:active{transform:scale(.985)}
 .wtxt{font-size:15px;line-height:1.45;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
 .wmeta{display:flex;flex-wrap:wrap;gap:6px;align-items:center;margin-top:8px}
 .chip.st{cursor:default}
-.st.active{background:#fff4e0;border-color:#f5e3c0;color:#b45309}
-.st.parked{background:#eef0ff;border-color:#dbe0ff;color:#4338ca}
-.st.resolved{background:#e8f8f2;border-color:#c6ecdc;color:#047857}
-.st.lb{background:#f7f6fb;color:#5d5a75}
-.tm{margin-left:auto;color:#b0adbf;font-size:11.5px}
-.empty{text-align:center;color:#8a87a0;font-size:14px}
-.tabs{position:fixed;bottom:12px;left:50%;transform:translateX(-50%);display:flex;gap:2px;background:rgba(255,255,255,.92);backdrop-filter:blur(12px);border:1px solid #eceaf4;border-radius:20px;padding:6px;box-shadow:0 14px 40px rgba(62,55,130,.18);z-index:40}
-.tab{border:none;background:none;border-radius:14px;padding:8px 13px;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:1px;min-width:62px;color:#8a87a0;font-family:inherit}
+.st.active{background:var(--st-a-bg);border-color:var(--st-a-brd);color:var(--st-a-ink)}
+.st.parked{background:var(--st-p-bg);border-color:var(--st-p-brd);color:var(--st-p-ink)}
+.st.resolved{background:var(--st-r-bg);border-color:var(--st-r-brd);color:var(--st-r-ink)}
+.st.lb{background:var(--st-l-bg);color:var(--st-l-ink)}
+.tm{margin-left:auto;color:var(--faint);font-size:11.5px}
+.empty{text-align:center;color:var(--muted);font-size:14px}
+.tabs{position:fixed;bottom:12px;left:50%;transform:translateX(-50%);display:flex;gap:2px;background:var(--tabs-bg);backdrop-filter:blur(12px);border:1px solid var(--tabs-brd);border-radius:20px;padding:6px;box-shadow:0 14px 40px rgba(62,55,130,.18);z-index:40}
+.tab{border:none;background:none;border-radius:14px;padding:8px 13px;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:1px;min-width:62px;color:var(--muted);font-family:inherit}
 .tab.on{background:#4f46e5;color:#fff}
 .tab span{font-size:17px;position:relative}.tab b{font-size:10px;font-weight:700}
 .bdg{position:absolute;top:-5px;right:-9px;background:#f59e0b;color:#fff;font-size:9px;font-style:normal;font-weight:700;border-radius:99px;padding:1px 5px}
-.ov{position:fixed;inset:0;background:rgba(35,32,52,.5);z-index:60;display:flex;align-items:flex-end;justify-content:center}
-.sheet{background:#fff;width:100%;max-width:560px;border-radius:24px 24px 0 0;padding:10px 20px 30px;max-height:88vh;overflow:auto}
-.handle{width:42px;height:5px;border-radius:99px;background:#e4e2f0;margin:6px auto 10px}
-.eyebrow{text-align:center;color:#9b98b0;font-size:11.5px;letter-spacing:.12em;text-transform:uppercase;font-weight:700;margin:2px 0 8px}
-.quote{background:#f7f6fb;border-left:4px solid #a5b4fc;border-radius:14px;padding:12px 14px;font-size:15.5px;line-height:1.5;margin:6px 0 10px}
-.fld{font-size:12.5px;color:#9b98b0;margin:10px 0 0;font-weight:700}
-.toast{position:fixed;top:16px;left:50%;transform:translateX(-50%);background:#312e46;color:#fff;border-radius:13px;padding:11px 16px;font-size:13.5px;z-index:99;box-shadow:0 12px 30px rgba(35,32,52,.35);max-width:90vw}
-.bar{height:10px;background:#e9e7f5;border-radius:99px;overflow:hidden;margin:10px 0 4px}
+.ov{position:fixed;inset:0;background:rgba(10,8,18,.6);z-index:60;display:flex;align-items:flex-end;justify-content:center}
+.sheet{background:var(--card);width:100%;max-width:560px;border-radius:24px 24px 0 0;padding:10px 20px 30px;max-height:88vh;overflow:auto}
+.handle{width:42px;height:5px;border-radius:99px;background:var(--field-brd);margin:6px auto 10px}
+.eyebrow{text-align:center;color:var(--faint);font-size:11.5px;letter-spacing:.12em;text-transform:uppercase;font-weight:700;margin:2px 0 8px}
+.quote{background:var(--quote-bg);border-left:4px solid var(--quote-brd);border-radius:14px;padding:12px 14px;font-size:15.5px;line-height:1.5;margin:6px 0 10px}
+.fld{font-size:12.5px;color:var(--muted);margin:10px 0 0;font-weight:700}
+.toast{position:fixed;top:16px;left:50%;transform:translateX(-50%);background:var(--toast-bg);color:var(--toast-ink);border-radius:13px;padding:11px 16px;font-size:13.5px;z-index:99;box-shadow:0 12px 30px rgba(35,32,52,.35);max-width:90vw}
+.bar{height:10px;background:var(--track);border-radius:99px;overflow:hidden;margin:10px 0 4px}
 .bar i{display:block;height:100%;background:linear-gradient(90deg,#818cf8,#14b8a6);border-radius:99px;transition:width .3s}
-.pbar{height:8px;background:#e9e7f5;border-radius:99px;overflow:hidden;margin:8px 0 2px}
+.pbar{height:8px;background:var(--track);border-radius:99px;overflow:hidden;margin:8px 0 2px}
 .pbar i{display:block;height:100%;background:linear-gradient(90deg,#818cf8,#14b8a6);border-radius:99px;transition:width .3s}
 .timer{font-size:44px;text-align:center;font-weight:700;font-variant-numeric:tabular-nums;margin:6px 0}
 .stat{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin:12px 0}
-.stat div{background:#f7f6fb;border-radius:14px;padding:10px;text-align:center}
-.stat b{font-size:21px;display:block}.stat span{font-size:11px;color:#8a87a0}
+.stat div{background:var(--well);border-radius:14px;padding:10px;text-align:center}
+.stat b{font-size:21px;display:block}.stat span{font-size:11px;color:var(--muted)}
 .week{display:flex;gap:8px;align-items:flex-end;height:100px;margin-top:10px}
 .week>div{flex:1;display:flex;flex-direction:column;justify-content:flex-end;align-items:center;gap:3px;height:100%}
 .week i{width:100%;max-width:34px;background:linear-gradient(180deg,#818cf8,#6366f1);border-radius:7px;min-height:3px}
-.week b,.week em{font-size:10.5px;color:#8a87a0;font-style:normal;font-weight:700}
+.week b,.week em{font-size:10.5px;color:var(--muted);font-style:normal;font-weight:700}
 ol.steps{padding-left:24px;line-height:1.55;font-size:14px}ol.steps li{margin:10px 0}
-.tip{background:#fff7e6;border:1px solid #f5e3c0;color:#92400e;border-radius:16px;padding:12px 14px;font-size:13.5px;line-height:1.5;margin:10px 0}
-.swap{background:#ecfdf5;border:1px solid #c6ecdc;color:#065f46;border-radius:14px;padding:12px 14px;margin:10px 0;font-size:14px;line-height:1.5}
-.why{background:#eef0ff;border:1px solid #dbe0ff;color:#4338ca;border-radius:14px;padding:12px 14px;margin:10px 0;font-size:14px;line-height:1.55}
-.mission{background:#f7f6fb;border:1.5px dashed #d9d6ee;border-radius:14px;padding:12px 14px;margin:12px 0 4px}
-.lesson p{line-height:1.6;font-size:14.5px;color:#514d68;margin:8px 0}
-.aerr{color:#dc2626;font-size:13.5px;min-height:18px;margin:6px 0 2px;text-align:center}
+.tip{background:var(--tip-bg);border:1px solid var(--tip-brd);color:var(--tip-ink);border-radius:16px;padding:12px 14px;font-size:13.5px;line-height:1.5;margin:10px 0}
+.swap{background:var(--swap-bg);border:1px solid var(--swap-brd);color:var(--swap-ink);border-radius:14px;padding:12px 14px;margin:10px 0;font-size:14px;line-height:1.5}
+.why{background:var(--why-bg);border:1px solid var(--why-brd);color:var(--why-ink);border-radius:14px;padding:12px 14px;margin:10px 0;font-size:14px;line-height:1.55}
+.mission{background:var(--well);border:1.5px dashed var(--mission-brd);border-radius:14px;padding:12px 14px;margin:12px 0 4px}
+.lesson p{line-height:1.6;font-size:14.5px;color:var(--lesson-ink);margin:8px 0}
+.aerr{color:var(--err);font-size:13.5px;min-height:18px;margin:6px 0 2px;text-align:center}
 @media(min-width:640px){.ov{align-items:center}.sheet{border-radius:24px}}
 </style>
 </head>
@@ -113,10 +150,10 @@ const BP=[['Breathe in…',4,1.18],['Hold…',4,1.18],['Breathe out slowly…',6
 const REQ=[2,2,1,1,1,1,1];
 
 let W;try{W=JSON.parse(localStorage.getItem('worrywindow')||'[]')}catch(e){W=[]}
-let CFG={tab:'path',filter:'all',dur:15,time:'17:30',hi:false};
+let CFG={tab:'path',filter:'all',dur:15,time:'17:30',hi:false,theme:''};
 try{Object.assign(CFG,JSON.parse(localStorage.getItem('wwcfg')||'{}'))}catch(e){}
 if(CFG.tab==='log')CFG.tab='worries';
-if(CFG.tab==='tools')CFG.tab='path';
+if(CFG.tab==='tools'||CFG.tab==='guide')CFG.tab='path';
 let USE={g5:0,br:0,trueNow:0,win:0,hb:0};
 try{Object.assign(USE,JSON.parse(localStorage.getItem('wwuse')||'{}'))}catch(e){}
 try{const old=JSON.parse(localStorage.getItem('wwcfg')||'{}').use;if(old){['g5','br','hb'].forEach(k=>{if(old[k]>USE[k])USE[k]=old[k]})}}catch(e){}
@@ -125,6 +162,13 @@ const saveCfg=()=>localStorage.setItem('wwcfg',JSON.stringify(CFG));
 const saveUse=()=>{localStorage.setItem('wwuse',JSON.stringify(USE));pushSoon()};
 let UI={capture:false,modal:null,challenge:null,welcome:!CFG.hi,auth:false,tricks:false,lesson:null,tool:null,gstep:0,kind:null};
 let SES=null,TICK=null,BREATH=null;
+
+// ---------- theme ----------
+let THEME=CFG.theme||((window.matchMedia&&matchMedia('(prefers-color-scheme: dark)').matches)?'dark':'light');
+function applyTheme(){document.body.classList.toggle('dark',THEME==='dark')}
+function toggleTheme(){THEME=THEME==='dark'?'light':'dark';CFG.theme=THEME;saveCfg();applyTheme();render()}
+function themeChipHTML(){return `<button class="chip" style="font-size:14px" title="Light / dark" onclick="toggleTheme()">${THEME==='dark'?'☀️':'🌙'}</button>`}
+function headExtras(){return `<div style="margin-left:auto;display:flex;gap:6px;align-items:center;flex-shrink:0">${syncChipHTML()}${themeChipHTML()}</div>`}
 
 // ---------- cloud sync ----------
 const save=()=>{saveLocal();pushSoon()};
@@ -161,7 +205,7 @@ async function pullRemote(celebrate){
 }
 function chipTxt(){return !sb?'':!USER?'🔒 Sign in to sync':SYNC==='saving'?'☁️ saving…':SYNC==='offline'?'☁️ retry…':'☁️ synced'}
 function updateChip(){const el=$('syncchip');if(el)el.textContent=chipTxt()}
-function syncChipHTML(){return sb?`<button id="syncchip" class="chip" style="margin-left:auto;font-size:12px" onclick="UI.auth=true;render()">${chipTxt()}</button>`:''}
+function syncChipHTML(){return sb?`<button id="syncchip" class="chip" style="font-size:12px" onclick="UI.auth=true;render()">${chipTxt()}</button>`:''}
 window.addEventListener('online',()=>{if(USER)pushSoon()});
 
 function toast(m){const d=document.createElement('div');d.className='toast';d.textContent=m;document.body.appendChild(d);setTimeout(()=>d.remove(),3400)}
@@ -187,8 +231,8 @@ function render(){
   else if(CFG.tab==='worries')h=viewWorries();
   else if(CFG.tab==='window')h=viewWindow();
   else if(CFG.tab==='progress')h=viewStats();
-  else h=viewGuide();
-  h+='<nav class="tabs">'+[['path','🛤️','Path'],['worries','🫧','Worries'],['progress','🌤️','Progress'],['guide','📖','Guide']].map(t=>
+  else h=viewPath();
+  h+='<nav class="tabs">'+[['path','🛤️','Path'],['worries','🫧','Worries'],['progress','🌤️','Progress']].map(t=>
     `<button class="tab ${CFG.tab===t[0]?'on':''}" onclick="go('${t[0]}')"><span>${t[2]}${t[0]==='worries'&&openC?`<i class="bdg">${openC}</i>`:''}</span><b>${t[1]}</b></button>`).join('')+'</nav>';
   if(UI.welcome)h+=sheetWelcome();
   if(UI.auth)h+=sheetAuth();
@@ -215,7 +259,8 @@ const SKMETA=[
 function viewPath(){
   const cur=[1,2,3,4,5,6,7].find(n=>unlocked(n)&&!doneFlag(n));
   const done=doneCount();
-  let h=`<div class="head"><div class="logo">🛤️</div><div><h1>My Path</h1><div class="sub">learn one skill at a time — no rush</div></div>${syncChipHTML()}</div>`;
+  let h=`<div class="head"><div class="logo">🛤️</div><div><h1>My Path</h1><div class="sub">learn one skill at a time — no rush</div></div>${headExtras()}</div>`;
+  if(!sb)h+=`<div class="tip">☁️ <b>Local-only mode.</b> Add your Supabase URL and key at the top of the code to unlock sign-in and cross-device sync.</div>`;
   h+=`<div class="card"><b>${done===7?'All seven skills practiced — the toolbox is yours 🎉':done===0?'Your first skill is ready below 👇':`Nice — ${done} of 7 skills practiced`}</b>
   <div class="pbar"><i style="width:${Math.round(done/7*100)}%"></i></div>
   <p class="hint" style="margin-top:6px">${done===7?'Use any tool, anytime, in any order. Reps are what rewire.':'Each skill unlocks a little practice mission. Finish it and the next skill opens. You can peek ahead anytime — nothing is hidden from you.'}</p></div>`;
@@ -225,7 +270,7 @@ function viewPath(){
     const st=d?'✅':u?(n===cur?'up next':'open'):'🔒';
     h+=`<div class="${cls}" onclick="openSkill(${n})"><div class="skic">${SKMETA[n-1][0]}</div><div style="flex:1"><b>${n}. ${SKMETA[n-1][1]}</b><p>${u?SKMETA[n-1][2]:'Unlocks when you finish Skill '+(n-1)+'’s practice — or tap to peek.'}</p></div><div class="skst">${st}</div></div>`;
   });
-  h+=`<div class="card" style="opacity:.85"><b>⏰ About the Worry Window</b><p style="color:#8a87a0;font-size:13px;margin:4px 0 8px">That’s Skill 6, near the end — on purpose. Your therapist wants this one light, so the app treats it that way. If worries are stacking up right now, the move is catching them (Skill 1), not scheduling them.</p><button class="btn ghost" onclick="CFG.tab='window';saveCfg();render()">peek at it anyway</button></div>`;
+  h+=`<div class="card" style="opacity:.85"><b>⏰ About the Worry Window</b><p style="color:var(--muted);font-size:13px;margin:4px 0 8px">That’s Skill 6, near the end — on purpose. Your therapist wants this one light, so the app treats it that way. If worries are stacking up right now, the move is catching them (Skill 1), not scheduling them.</p><button class="btn ghost" onclick="CFG.tab='window';saveCfg();render()">peek at it anyway</button></div>`;
   return h;
 }
 
@@ -235,7 +280,7 @@ function missionBox(n){
   let btn='';
   if(n===1)btn=`<button class="btn primary" style="width:100%;margin-top:8px" onclick="startCatch()">🫧 Catch a worry</button>`;
   if(n===2)btn=`<div class="row"><button class="btn primary" style="flex:1" onclick="toOpenWorries('Open a worry, then tap one of the 🏷️ trick labels')">Open my worries</button><button class="btn soft" onclick="UI.tricks=true;render()">See the 6 tricks</button></div>`;
-  if(n===3)btn=`<button class="btn primary" style="width:100%;margin-top:8px" onclick="toOpenWorries('Open a worry, then tap ⚖️ Talk back to it')">Pick a worry to fact-check</button>`;
+  if(n===3)btn=`<button class="btn primary" style="width:100%;margin-top:8px" onclick="toOpenWorries('Open a worry, then tap ⚖️ Check the facts')">Pick a worry to fact-check</button>`;
   if(n===4)btn=`<div class="row"><button class="btn soft" style="flex:1" onclick="UI.gstep=0;UI.tool='ground';render()">👀 Senses game</button></div><div class="row"><button class="btn soft" style="flex:1" onclick="startBreath()">🫁 Belly breathing</button></div><div class="row"><button class="btn soft" style="flex:1" onclick="UI.gstep='true';UI.tool='ground';render()">🌤️ Name what is true</button></div>`;
   if(n===5)btn=`<button class="btn primary" style="width:100%;margin-top:8px" onclick="toOpenWorries('Open a worry, add your 👣 small step, then come back and tap “I did it”')">Open my worries</button>`;
   if(n===6)btn=`<button class="btn primary" style="width:100%;margin-top:8px" onclick="CFG.tab='window';UI.lesson=null;saveCfg();render()">Open the Worry Window</button>`;
@@ -269,7 +314,7 @@ function lessonHTML(n){
      ex:`💗 Example: You catch the spiral at the kitchen sink. You dry your hands, drink a glass of water slowly, then stretch for two minutes. Loop interrupted. Rep counted. Brain rewired — one tiny rep at a time.`}};
   const s=SKMETA[n-1];
   return `<div class="card">
-  <div class="row" style="margin:0 0 4px"><button class="btn ghost" onclick="closeLesson()">← my path</button></div>
+  <div class="row" style="margin:0 0 4px"><button class="btn ghost" onclick="closeLesson()">← my path</button><div style="flex:1"></div>${themeChipHTML()}</div>
   <div class="eyebrow">skill ${n} of 7 ${u?'':(doneFlag(n)?'· ✅ practiced':'· 🔒 preview')}</div>
   <h2>${s[0]} ${s[1]}</h2>
   ${u?'':'<div class="tip">🔓 This unlocks naturally once you finish Skill '+(n-1)+'’s practice — but feel free to read ahead. Knowing what’s coming is half the battle.</div>'}
@@ -286,20 +331,20 @@ function sheetTricks(){
   return `<div class="ov" onclick="if(event.target===this){UI.tricks=false;render()}"><div class="sheet">
   <div class="handle"></div><div class="eyebrow">🏷️ the six worry tricks</div>
   <p class="hint" style="text-align:center;margin-top:0">Say “I'm having a <i>what-if</i> thought” — naming the trick puts distance between you and the loop.</p>
-  `+LABELS.map(l=>`<div class="quote" style="margin:8px 0"><b>${l[1]} ${l[2]}</b><br><span style="font-size:13.5px;color:#514d68">${EX[l[0]]}</span></div>`).join('')+`
+  `+LABELS.map(l=>`<div class="quote" style="margin:8px 0"><b>${l[1]} ${l[2]}</b><br><span style="font-size:13.5px;color:var(--lesson-ink)">${EX[l[0]]}</span></div>`).join('')+`
   <div class="row"><button class="btn primary" style="flex:1" onclick="UI.tricks=false;render()">Got it ✓</button></div></div></div>`;
 }
 
 // ---------- skill 4 tools ----------
 function viewGround(){
   if(BREATH)return viewBreath();
-  if(UI.gstep==='done')return `<div class="card"><div style="text-align:center;font-size:44px">🌸</div><h2 style="text-align:center">Back in the present</h2><p class="center" style="color:#514d68">That's the skill. Worry lives in the future — you just came back to now. Use it anytime, anywhere.</p><div class="row"><button class="btn primary" style="flex:1" onclick="UI.tool=null;render()">Back to my path</button><button class="btn soft" style="flex:1" onclick="UI.gstep=0;render()">Once more</button></div></div>`;
+  if(UI.gstep==='done')return `<div class="card"><div style="text-align:center;font-size:44px">🌸</div><h2 style="text-align:center">Back in the present</h2><p class="center" style="color:var(--lesson-ink)">That's the skill. Worry lives in the future — you just came back to now. Use it anytime, anywhere.</p><div class="row"><button class="btn primary" style="flex:1" onclick="UI.tool=null;render()">Back to my path</button><button class="btn soft" style="flex:1" onclick="UI.gstep=0;render()">Once more</button></div></div>`;
   if(UI.gstep==='true')return `<div class="card"><div class="row" style="margin:0"><button class="btn ghost" onclick="UI.tool=null;UI.gstep=0;render()">← back</button></div><h2>🌤️ Name what is true right now</h2><p class="lesson">Worry says “what if…”. Answer with what <b>is</b> — boring, factual, present-tense is perfect.</p><textarea id="gtrue" rows="3" placeholder="e.g., I'm sitting in my room and I'm safe. The meeting is at 3. I have a plan."></textarea><div class="row"><button class="btn primary" style="flex:1" onclick="trueNow()">That is what is true ✓</button></div></div>`;
   if(UI.gstep>0){
     const g=G5[UI.gstep-1];
     return `<div class="card"><div class="eyebrow">${UI.gstep} of 5</div><h2 style="text-align:center;font-size:44px;margin:8px 0">${g[0]}</h2><p class="center" style="font-size:16px">Name <b>${g[2]}</b> thing${g[2]===1?'':'s'} you can <b>${g[1]}</b> right now.</p><input placeholder="Type them, or just look around and think them — both count"><div class="row"><button class="btn primary" style="flex:1" onclick="gNext()">${UI.gstep===5?'Finish 🌸':'Next'}</button></div><div class="row" style="justify-content:center"><button class="btn ghost" onclick="UI.gstep=0;render()">back</button></div></div>`;
   }
-  return `<div class="card"><div class="row" style="margin:0"><button class="btn ghost" onclick="UI.tool=null;render()">← my path</button></div><h2>🌸 “What if” → “What is”</h2><p class="lesson">Worry lives in the future. Calm lives in the present. Pick a tool and come back to right now:</p>
+  return `<div class="card"><div class="row" style="margin:0"><button class="btn ghost" onclick="UI.tool=null;render()">← my path</button><div style="flex:1"></div>${themeChipHTML()}</div><h2>🌸 “What if” → “What is”</h2><p class="lesson">Worry lives in the future. Calm lives in the present. Pick a tool and come back to right now:</p>
   <div class="row"><button class="btn soft" style="flex:1" onclick="UI.gstep=1;render()">👀 5-4-3-2-1 senses game</button></div>
   <div class="row"><button class="btn soft" style="flex:1" onclick="startBreath()">🫁 Deep belly breathing</button></div>
   <div class="row"><button class="btn soft" style="flex:1" onclick="UI.gstep='true';render()">🌤️ Name what is true right now</button></div></div>`;
@@ -313,10 +358,10 @@ function startBreath(){UI.gstep=0;BREATH={ph:0,left:BP[0][1]};render();setTimeou
   const n=$('bnum');if(n)n.textContent=BREATH.left;
   const t=$('btxt');if(t)t.textContent=BP[BREATH.ph][0];
 },1000)}
-function viewBreath(){return `<div class="card"><div class="row" style="margin:0"><button class="btn ghost" onclick="stopBreathSilent();UI.tool=null;UI.gstep=0;render()">← back</button></div><div class="eyebrow">🫁 deep belly breathing</div>
+function viewBreath(){return `<div class="card"><div class="row" style="margin:0"><button class="btn ghost" onclick="stopBreathSilent();UI.tool=null;UI.gstep=0;render()">← back</button><div style="flex:1"></div>${themeChipHTML()}</div><div class="eyebrow">🫁 deep belly breathing</div>
 <div class="bc" id="bc" style="transform:scale(1)"></div>
 <p class="center" style="font-size:17px;font-weight:700;margin:4px 0" id="btxt">${BP[0][0]}</p>
-<p class="center" style="color:#8a87a0">follow the circle · <b id="bnum">${BREATH.left}</b></p>
+<p class="center" style="color:var(--muted)">follow the circle · <b id="bnum">${BREATH.left}</b></p>
 <p class="hint" style="text-align:center">Hand on your belly — let it rise as you breathe in. A few rounds is plenty.</p>
 <div class="row"><button class="btn primary" style="flex:1" onclick="stopBreath()">I feel calmer — done ✓</button></div></div>`}
 function stopBreathSilent(){if(BREATH)clearInterval(BREATH.tk);BREATH=null}
@@ -324,7 +369,7 @@ function stopBreath(){stopBreathSilent();USE.br++;saveUse();UI.tool=null;toast("
 
 // ---------- skill 7 ----------
 function viewHabit(){
-  return `<div class="card"><div class="row" style="margin:0"><button class="btn ghost" onclick="UI.tool=null;render()">← my path</button></div><h2>💗 Swap the loop for a habit</h2>
+  return `<div class="card"><div class="row" style="margin:0"><button class="btn ghost" onclick="UI.tool=null;render()">← my path</button><div style="flex:1"></div>${themeChipHTML()}</div><h2>💗 Swap the loop for a habit</h2>
   <p class="lesson">You can't just switch worry off — you <i>replace</i> it. Pick something grounding and go do it for a few minutes:</p>
   <div class="lbls">`+SWAPS.map(x=>`<button class="chip" onclick="pickHabit('${x[0]}','${x[1]}')">${x[0]} ${x[1]}</button>`).join('')+`</div>
   <div class="row"><button class="btn primary" style="flex:1" onclick="pickHabit()">🎲 Surprise me</button></div>
@@ -334,7 +379,7 @@ function pickHabit(e,what){USE.hb++;saveUse();UI.tool=null;const s=e||'';const t
 
 // ---------- worries ----------
 function viewWorries(){
-  let h=`<div class="head"><div class="logo">🫧</div><div><h1>My Worries</h1><div class="sub">written down is already halfway handled</div></div>${syncChipHTML()}</div>`;
+  let h=`<div class="head"><div class="logo">🫧</div><div><h1>My Worries</h1><div class="sub">written down is already halfway handled</div></div>${headExtras()}</div>`;
   if(!W.length)h+=`<div class="tip"><b>How this works:</b><br>1️⃣ When a worry won't stop spinning, tap the big button and write it down.<br>2️⃣ Answer the quick check: real problem, or fear-based thought?<br>3️⃣ The path on the 🛤️ tab will tell you what to do with it next.</div>`;
   if(UI.capture){
     h+=`<div class="card"><textarea id="wtext" rows="3" autofocus placeholder="What's the worry? Your own words are perfect. e.g., What if I embarrass myself tomorrow?"></textarea>
@@ -423,11 +468,11 @@ function saveCh(id){
 // ---------- skill 6: window (kept light) ----------
 function viewWindow(){
   const parked=W.filter(w=>w.status==='parked');
-  const top=`<div class="row" style="margin:0"><button class="btn ghost" onclick="CFG.tab='path';saveCfg();render()">← my path</button></div><p class="hint" style="text-align:center;margin:4px 0 0">Skill 6 — no pressure, this tool is here whenever you want it.</p>`;
+  const top=`<div class="row" style="margin:0"><button class="btn ghost" onclick="CFG.tab='path';saveCfg();render()">← my path</button><div style="flex:1"></div>${themeChipHTML()}</div><p class="hint" style="text-align:center;margin:4px 0 0">Skill 6 — no pressure, this tool is here whenever you want it.</p>`;
   if(SES&&SES.done){
     const d=SES.done;
     return `<div class="card">${top}<div style="text-align:center;font-size:44px">🌙</div><h2 style="text-align:center;margin:4px 0">Worry Time is over</h2>
-    <p class="center" style="color:#514d68">${d.reason==='time'?"Time's up — and that's the whole point. The window closed, and the worries stay in it.":d.reason==='done'?'You met every single worry on the list. That is a genuinely good day.':'You closed it early — totally allowed. You are the one in charge here.'}</p>
+    <p class="center" style="color:var(--lesson-ink)">${d.reason==='time'?"Time's up — and that's the whole point. The window closed, and the worries stay in it.":d.reason==='done'?'You met every single worry on the list. That is a genuinely good day.':'You closed it early — totally allowed. You are the one in charge here.'}</p>
     <div class="stat"><div><b>${d.rel}</b><span>🎈 let go</span></div><div><b>${d.work}</b><span>⚖️ talked back</span></div><div><b>${d.keep}</b><span>⏳ next time</span></div></div>
     <div class="swap"><b>Still feel the pull to keep worrying? Do this instead:</b><br>${d.swap[0]} ${d.swap[1]}</div>
     <button class="btn primary" style="width:100%" onclick="SES=null;render()">Done</button></div>`;
@@ -436,7 +481,7 @@ function viewWindow(){
     const w=SES.queue[SES.idx];
     return `<div class="card">${top}<div class="timer" id="tleft">${mmss(Math.max(0,Math.round((SES.endsAt-Date.now())/1e3)))}</div>
     <div class="bar"><i id="tbar" style="width:100%"></i></div>
-    <p class="center" style="color:#8a87a0;font-size:13px">Worry ${SES.idx+1} of ${SES.queue.length} · one at a time, that's all</p>
+    <p class="center" style="color:var(--muted);font-size:13px">Worry ${SES.idx+1} of ${SES.queue.length} · one at a time, that's all</p>
     ${w?`<div class="quote">${esc(w.text)}</div>
     <div class="row"><button class="btn green" onclick="release('${w.id}')">🎈 It feels lighter — let it go</button><button class="btn primary" onclick="UI.challenge='${w.id}';render()">⚖️ Check the facts</button></div>
     <div class="row"><button class="btn ghost" onclick="keep()">⏭ Not today — keep it for next time</button></div>`:''}
@@ -448,7 +493,7 @@ function viewWindow(){
   <div class="fld">⏳ How long should it last?</div><div class="dur">${[5,10,15,20,30].map(d=>`<button class="chip ${CFG.dur===d?'on':''}" onclick="CFG.dur=${d};saveCfg();render()">${d}m</button>`).join('')}</div>
   <div class="tip">💡 Tip: set a daily phone alarm for this time until the habit sticks.</div>
   <button class="btn primary" style="width:100%" onclick="startWin()">${parked.length?'Open my Worry Time · '+parked.length+' waiting':'Open my Worry Time'}</button>
-  ${parked.length?'':'<p class="center" style="color:#8a87a0;font-size:13px;margin-top:10px">Nothing waiting. Worries you “Save for Worry Time” will gather here.</p>'}</div>`;
+  ${parked.length?'':'<p class="center" style="color:var(--muted);font-size:13px;margin-top:10px">Nothing waiting. Worries you “Save for Worry Time” will gather here.</p>'}</div>`;
 }
 function startWin(){
   const parked=W.filter(w=>w.status==='parked');
@@ -481,31 +526,15 @@ function viewStats(){
   const max=Math.max(1,...counts);
   const lc={};W.forEach(w=>(w.labels||[]).forEach(l=>lc[l]=(lc[l]||0)+1));
   const top=Object.entries(lc).sort((a,b)=>b[1]-a[1]).slice(0,3);
-  let h=`<div class="head"><div class="logo">🌤️</div><div><h1>Progress</h1><div class="sub">a record, never a scorecard</div></div>${syncChipHTML()}</div>`;
+  let h=`<div class="head"><div class="logo">🌤️</div><div><h1>Progress</h1><div class="sub">a record, never a scorecard</div></div>${headExtras()}</div>`;
   h+=`<div class="card"><b>Your path: ${doneCount()} of 7 skills practiced</b><div class="pbar"><i style="width:${Math.round(doneCount()/7*100)}%"></i></div><div class="lbls" style="margin-top:10px">${[1,2,3,4,5,6,7].map(n=>`<span class="chip st lb">${doneFlag(n)?'✅':'⬜'} ${SKMETA[n-1][0]} ${SKMETA[n-1][1]}</span>`).join('')}</div></div>`;
   h+=`<div class="stat"><div><b>${total}</b><span>written down</span></div><div><b>${resolved}</b><span>finished with</span></div><div><b>${parked}</b><span>waiting now</span></div></div>`;
   if(acts)h+=`<div class="swap">👣 <b>${acts} small step${acts===1?'':'s'} taken</b> — action is the skill that shrinks real problems.</div>`;
   if(released)h+=`<div class="tip">🎈 ${released} ${released===1?'worry faded':'worries faded'} on its own by the time you sat down with it. That's what worries do when you stop feeding them all day.</div>`;
   if(USE.g5||USE.br||USE.trueNow||USE.hb)h+=`<div class="card"><h3>Skill reps so far</h3><div class="lbls">${USE.g5?`<span class="chip st lb">👀 Senses game ×${USE.g5}</span>`:''}${USE.br?`<span class="chip st lb">🫁 Breathing ×${USE.br}</span>`:''}${USE.trueNow?`<span class="chip st lb">🌤️ True-right-now ×${USE.trueNow}</span>`:''}${USE.hb?`<span class="chip st lb">💗 Habit swaps ×${USE.hb}</span>`:''}</div><p class="hint">Every rep retrains the loop. That's the whole game. 💪</p></div>`;
   h+=`<div class="card"><h3>Your week at a glance</h3><div class="week">`+counts.map((c,i)=>`<div><em>${c||''}</em><i style="height:${(c/max)*100}%"></i><b>${'SMTWTFS'[days[i].getDay()]}</b></div>`).join('')+`</div></div>`;
-  h+=`<div class="card"><h3>Your most common worry tricks</h3>`+(top.length?`<div class="lbls">`+top.map(([l,n])=>{const L=LABELS.find(x=>x[0]===l);return L?`<span class="chip" style="background:#4f46e5;color:#fff;border-color:#4f46e5;cursor:default">${L[1]} ${L[2]} ×${n}</span>`:''}).join('')+`</div>`:`<p style="color:#8a87a0;font-size:14px">Label a few worries and your personal pattern will surface here.</p>`)+`</div>`;
+  h+=`<div class="card"><h3>Your most common worry tricks</h3>`+(top.length?`<div class="lbls">`+top.map(([l,n])=>{const L=LABELS.find(x=>x[0]===l);return L?`<span class="chip" style="background:#4f46e5;color:#fff;border-color:#4f46e5;cursor:default">${L[1]} ${L[2]} ×${n}</span>`:''}).join('')+`</div>`:`<p style="color:var(--muted);font-size:14px">Label a few worries and your personal pattern will surface here.</p>`)+`</div>`;
   return h;
-}
-
-// ---------- guide ----------
-function viewGuide(){
-  return `${sb?'':'<div class="tip">☁️ <b>Local-only mode.</b> Add your Supabase URL and key at the top of the code to unlock sign-in and cross-device sync.</div>'}
-  <div class="card"><div class="head" style="padding-top:0"><div class="logo">📖</div><div><h1>The Guide</h1><div class="sub">“How to Train Your Brain Out of Worry” — at a glance</div></div></div>
-  <ol class="steps">
-  <li><b>🌀 Catch the worry loop.</b> Notice the spiral. Ask: “Is this a real problem, or a fear-based thought?”</li>
-  <li><b>🏷️ Name the thought, not yourself.</b> “I'm having an anxious thought” — distance, not identity.</li>
-  <li><b>⚖️ Check the facts.</b> Proof? Past experience? A balanced view? Worries lose power when examined.</li>
-  <li><b>🌸 Shift “what if” → “what is.”</b> Senses game, belly breathing, name what's true right now.</li>
-  <li><b>📝 Make a small action plan.</b> “What is one small thing I can do today?” Action restores control.</li>
-  <li><b>⏰ Keep a daily Worry Window.</b> Scheduled minutes, not the whole day. Keep this one light.</li>
-  <li><b>💗 Replace rumination with a helpful habit.</b> Stretch, walk, music, water. Swap, don't resist.</li>
-  </ol>
-  <p class="hint">Each skill has its own full lesson on the 🛤️ Path tab — with examples and the “why it works.”</p></div>`;
 }
 
 // ---------- welcome & auth ----------
@@ -513,7 +542,7 @@ function sheetWelcome(){
   return `<div class="ov"><div class="sheet">
   <div class="handle"></div><div class="eyebrow">welcome 👋</div>
   <h2 style="text-align:center">Learn to train your brain out of worry — one skill at a time</h2>
-  <p style="color:#514d68;font-size:14.5px;line-height:1.6">This app is built on your handout's <b>7 skills</b>, and it teaches them <b>in order, one at a time</b>:<br><br>📖 Each skill gets a short lesson — what it is, why it works, an example.<br>🎯 Then one small practice mission on a real worry of yours.<br>✅ Finish it, and the next skill unlocks.<br><br>The Worry Window is Skill 6, near the end, kept light — exactly like your therapist asked. Start at Skill 1 and the path does the rest. There's no wrong way to use this.</p>
+  <p style="color:var(--lesson-ink);font-size:14.5px;line-height:1.6">This app is built on your handout's <b>7 skills</b>, and it teaches them <b>in order, one at a time</b>:<br><br>📖 Each skill gets a short lesson — what it is, why it works, an example.<br>🎯 Then one small practice mission on a real worry of yours.<br>✅ Finish it, and the next skill unlocks.<br><br>The Worry Window is Skill 6, near the end, kept light — exactly like your therapist asked. Start at Skill 1 and the path does the rest. There's no wrong way to use this.</p>
   ${sb?'<div class="swap">☁️ Want everything on every device? Tap <b>“Sign in to sync”</b> at the top of the Path tab anytime.</div>':''}
   <div class="row"><button class="btn primary" style="flex:1" onclick="CFG.hi=true;saveCfg();UI.welcome=false;render()">Start Skill 1 🌀</button></div>
   </div></div>`;
@@ -521,7 +550,7 @@ function sheetWelcome(){
 function sheetAuth(){
   if(USER)return `<div class="ov" onclick="if(event.target===this){UI.auth=false;render()}"><div class="sheet">
   <div class="handle"></div><div class="eyebrow">☁️ your account</div>
-  <div class="quote" style="text-align:center">${esc(USER.email)}<br><span style="font-size:13px;color:#8a87a0">${chipTxt()}</span></div>
+  <div class="quote" style="text-align:center">${esc(USER.email)}<br><span style="font-size:13px;color:var(--muted)">${chipTxt()}</span></div>
   <p class="hint" style="text-align:center">Your worries and your place on the path are saved to your account and follow you to any device you sign in on.</p>
   <div class="row"><button class="btn soft" style="flex:1" onclick="UI.auth=false;render()">close</button><button class="btn ghost" onclick="sb.auth.signOut()">sign out</button></div>
   </div></div>`;
@@ -561,6 +590,7 @@ if(sb)sb.auth.onAuthStateChange((ev,sess)=>{
   else if(!USER&&ev==='SIGNED_OUT'){SYNC='local';UI.auth=false;toast('Signed out — your data stays safe on this device.');render()}
 });
 
+applyTheme();
 render();
 </script>
 </body>
