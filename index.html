@@ -7,7 +7,6 @@
 <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🛤️</text></svg>">
 <link rel="manifest" href="manifest.webmanifest">
 <meta name="theme-color" content="#4f46e5">
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <style>
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
 :root{
@@ -124,14 +123,6 @@ ol.steps{padding-left:24px;line-height:1.55;font-size:14px}ol.steps li{margin:10
 <body>
 <div id="app"></div>
 <script>
-// ⬇️⬇️ PASTE YOUR SUPABASE KEYS HERE ⬇️⬇️
-const SUPA_URL="https://aywkqtjcsvdqbrzlnypu.supabase.co";
-const SUPA_KEY="sb_publishable_l9QQkm2SBIlGEpNWN2RZvg_BuuGPQys";
-// ⬆️⬆️ PASTE YOUR SUPABASE KEYS HERE ⬆️⬆️
-
-const sb=(SUPA_URL.startsWith('http')&&SUPA_KEY.length>20)?supabase.createClient(SUPA_URL,SUPA_KEY):null;
-let USER=null,SYNC='local';
-
 const $=id=>document.getElementById(id);
 const uid=()=>Date.now().toString(36)+Math.random().toString(36).slice(2,7);
 const esc=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
@@ -161,8 +152,8 @@ try{Object.assign(USE,JSON.parse(localStorage.getItem('wwuse')||'{}'))}catch(e){
 try{const old=JSON.parse(localStorage.getItem('wwcfg')||'{}').use;if(old){['g5','br','hb'].forEach(k=>{if(old[k]>USE[k])USE[k]=old[k]})}}catch(e){}
 const saveLocal=()=>localStorage.setItem('worrywindow',JSON.stringify(W));
 const saveCfg=()=>localStorage.setItem('wwcfg',JSON.stringify(CFG));
-const saveUse=()=>{localStorage.setItem('wwuse',JSON.stringify(USE));pushSoon()};
-let UI={capture:false,modal:null,challenge:null,welcome:!CFG.hi,auth:false,tricks:false,lesson:null,tool:null,gstep:0,kind:null};
+const saveUse=()=>localStorage.setItem('wwuse',JSON.stringify(USE));
+let UI={capture:false,modal:null,challenge:null,welcome:!CFG.hi,tricks:false,lesson:null,tool:null,gstep:0,kind:null};
 let SES=null,TICK=null,BREATH=null;
 
 // ---------- theme ----------
@@ -170,45 +161,10 @@ let THEME=CFG.theme||((window.matchMedia&&matchMedia('(prefers-color-scheme: dar
 function applyTheme(){document.body.classList.toggle('dark',THEME==='dark')}
 function toggleTheme(){THEME=THEME==='dark'?'light':'dark';CFG.theme=THEME;saveCfg();applyTheme();render()}
 function themeChipHTML(){return `<button class="chip" style="font-size:14px" title="Light / dark" onclick="toggleTheme()">${THEME==='dark'?'☀️':'🌙'}</button>`}
-function headExtras(){return `<div style="margin-left:auto;display:flex;gap:6px;align-items:center;flex-shrink:0">${syncChipHTML()}${themeChipHTML()}</div>`}
+function headExtras(){return `<div style="margin-left:auto;display:flex;gap:6px;align-items:center;flex-shrink:0">${themeChipHTML()}</div>`}
 
-// ---------- cloud sync ----------
-const save=()=>{saveLocal();pushSoon()};
-let pushT=null;
-function pushSoon(){if(!sb||!USER)return;SYNC='saving';updateChip();clearTimeout(pushT);pushT=setTimeout(pushNow,700)}
-async function pushNow(){
-  if(!sb||!USER)return;
-  try{
-    const{error}=await sb.from('ww_state').upsert({user_id:USER.id,payload:{v:2,w:W,p:USE},updated_at:new Date().toISOString()});
-    if(error)throw error;
-    SYNC='synced';updateChip();
-  }catch(e){SYNC='offline';updateChip();toast("☁️ Couldn't sync just now — everything is safe on this device and will upload next time.")}
-}
-async function pullRemote(celebrate){
-  if(!sb||!USER)return;
-  try{
-    const{data,error}=await sb.from('ww_state').select().eq('user_id',USER.id).maybeSingle();
-    if(error)throw error;
-    let rw=null,rp=null;
-    if(data){
-      if(Array.isArray(data.payload))rw=data.payload;
-      else if(data.payload){rw=data.payload.w||[];rp=data.payload.p||{}}
-    }
-    if(rw&&rw.length){
-      const map={};rw.forEach(w=>map[w.id]=w);
-      W.forEach(w=>{if(!map[w.id])map[w.id]=w});
-      W=Object.values(map).sort((a,b)=>b.created-a.created);
-    }
-    if(rp)['g5','br','trueNow','win','hb'].forEach(k=>{if((rp[k]||0)>USE[k])USE[k]=rp[k]});
-    localStorage.setItem('wwuse',JSON.stringify(USE));
-    SYNC='synced';saveLocal();UI.auth=false;render();pushNow();
-    if(celebrate)toast('Signed in ✓ your path and worries now follow you everywhere ☁️');
-  }catch(e){SYNC='offline';updateChip();toast('Signed in, but the cloud is unreachable — will retry. '+e.message)}
-}
-function chipTxt(){return !sb?'':!USER?'🔒 Sign in to sync':SYNC==='saving'?'☁️ saving…':SYNC==='offline'?'☁️ retry…':'☁️ synced'}
-function updateChip(){const el=$('syncchip');if(el)el.textContent=chipTxt()}
-function syncChipHTML(){return sb?`<button id="syncchip" class="chip" style="font-size:12px" onclick="UI.auth=true;render()">${chipTxt()}</button>`:''}
-window.addEventListener('online',()=>{if(USER)pushSoon()});
+// ---------- save ----------
+const save=()=>{saveLocal()};
 
 function toast(m){const d=document.createElement('div');d.className='toast';d.textContent=m;document.body.appendChild(d);setTimeout(()=>d.remove(),3400)}
 function stBadge(w){return w.status==='parked'?'⏰ waiting':w.status==='resolved'?(w.resolution==='released'?'🎈 let go':w.resolution==='challenged'?'⚖️ talked back':w.resolution==='action'?'👣 acted on it':'✅ done'):'🫧 fresh'}
@@ -237,7 +193,6 @@ function render(){
   h+='<nav class="tabs">'+[['path','🛤️','Path'],['worries','🫧','Worries'],['progress','🌤️','Progress']].map(t=>
     `<button class="tab ${CFG.tab===t[0]?'on':''}" onclick="go('${t[0]}')"><span>${t[2]}${t[0]==='worries'&&openC?`<i class="bdg">${openC}</i>`:''}</span><b>${t[1]}</b></button>`).join('')+'</nav>';
   if(UI.welcome)h+=sheetWelcome();
-  if(UI.auth)h+=sheetAuth();
   if(UI.tricks)h+=sheetTricks();
   if(UI.modal)h+=sheetWorry();
   if(UI.challenge)h+=sheetChallenge();
@@ -262,7 +217,6 @@ function viewPath(){
   const cur=[1,2,3,4,5,6,7].find(n=>unlocked(n)&&!doneFlag(n));
   const done=doneCount();
   let h=`<div class="head"><div class="logo">🛤️</div><div><h1>My Path</h1><div class="sub">learn one skill at a time — no rush</div></div>${headExtras()}</div>`;
-  if(!sb)h+=`<div class="tip">☁️ <b>Local-only mode.</b> Add your Supabase URL and key at the top of the code to unlock sign-in and cross-device sync.</div>`;
   h+=`<div class="card"><b>${done===7?'All seven skills practiced — the toolbox is yours 🎉':done===0?'Your first skill is ready below 👇':`Nice — ${done} of 7 skills practiced`}</b>
   <div class="pbar"><i style="width:${Math.round(done/7*100)}%"></i></div>
   <p class="hint" style="margin-top:6px">${done===7?'Use any tool, anytime, in any order. Reps are what rewire.':'Each skill unlocks a little practice mission. Finish it and the next skill opens. You can peek ahead anytime — nothing is hidden from you.'}</p></div>`;
@@ -545,52 +499,20 @@ function sheetWelcome(){
   <div class="handle"></div><div class="eyebrow">welcome 👋</div>
   <h2 style="text-align:center">Learn to train your brain out of worry — one skill at a time</h2>
   <p style="color:var(--lesson-ink);font-size:14.5px;line-height:1.6">This app is built on your handout's <b>7 skills</b>, and it teaches them <b>in order, one at a time</b>:<br><br>📖 Each skill gets a short lesson — what it is, why it works, an example.<br>🎯 Then one small practice mission on a real worry of yours.<br>✅ Finish it, and the next skill unlocks.<br><br>The Worry Window is Skill 6, near the end, kept light — exactly like your therapist asked. Start at Skill 1 and the path does the rest. There's no wrong way to use this.</p>
-  ${sb?'<div class="swap">☁️ Want everything on every device? Tap <b>“Sign in to sync”</b> at the top of the Path tab anytime.</div>':''}
   <div class="row"><button class="btn primary" style="flex:1" onclick="CFG.hi=true;saveCfg();UI.welcome=false;render()">Start Skill 1 🌀</button></div>
   </div></div>`;
 }
-function sheetAuth(){
-  if(USER)return `<div class="ov" onclick="if(event.target===this){UI.auth=false;render()}"><div class="sheet">
-  <div class="handle"></div><div class="eyebrow">☁️ your account</div>
-  <div class="quote" style="text-align:center">${esc(USER.email)}<br><span style="font-size:13px;color:var(--muted)">${chipTxt()}</span></div>
-  <p class="hint" style="text-align:center">Your worries and your place on the path are saved to your account and follow you to any device you sign in on.</p>
-  <div class="row"><button class="btn soft" style="flex:1" onclick="UI.auth=false;render()">close</button><button class="btn ghost" onclick="sb.auth.signOut()">sign out</button></div>
-  </div></div>`;
-  return `<div class="ov" onclick="if(event.target===this){UI.auth=false;render()}"><div class="sheet">
-  <div class="handle"></div><div class="eyebrow">☁️ sync across devices</div>
-  <h2 style="text-align:center">Sign in</h2>
-  <p class="hint" style="text-align:center;margin-top:4px">Use the <b>same email and password on every device</b>, and everything follows you.</p>
-  <div class="fld">Email</div><input id="aemail" type="email" autocomplete="email" placeholder="you@example.com">
-  <div class="fld">Password (6+ characters)</div><input id="apass" type="password" autocomplete="current-password" placeholder="••••••••" onkeydown="if(event.key==='Enter')doAuth('in')">
-  <div class="aerr" id="aerr"></div>
-  <div class="row"><button class="btn primary" style="flex:1" onclick="doAuth('in')">Sign in</button><button class="btn soft" style="flex:1" onclick="doAuth('up')">Create account</button></div>
-  <p class="hint" style="text-align:center">First time? “Create account” sets everything up.</p>
-  <div class="row" style="justify-content:center"><button class="btn ghost" onclick="UI.auth=false;render()">not now</button></div>
-  </div></div>`;
-}
-function authErr(m){const el=$('aerr');if(el)el.textContent=m}
-async function doAuth(mode){
-  if(!sb)return;
-  const email=$('aemail').value.trim().toLowerCase(),pass=$('apass').value;
-  if(!email||!pass){authErr('Please fill in both your email and a password.');return}
-  authErr('');
-  try{
-    if(mode==='up'){
-      const r=await sb.auth.signUp({email,password:pass});
-      if(r.data&&r.data.user&&!r.session)authErr('Almost there! Check your email inbox for a confirmation link, then sign in here.');
-    }else{
-      const{error}=await sb.auth.signInWithPassword({email,password:pass});
-      if(error)throw error;
-    }
-  }catch(e){authErr(e.message)}
-}
 
-if(sb)sb.auth.onAuthStateChange((ev,sess)=>{
-  const was=USER;
-  USER=sess?.user||null;
-  if(USER&&!was)pullRemote(ev==='SIGNED_IN');
-  else if(!USER&&ev==='SIGNED_OUT'){SYNC='local';UI.auth=false;toast('Signed out — your data stays safe on this device.');render()}
-});
+
+// ---------- welcome ----------
+function sheetWelcome(){
+  return `<div class="ov"><div class="sheet">
+  <div class="handle"></div><div class="eyebrow">welcome 👋</div>
+  <h2 style="text-align:center">Learn to train your brain out of worry — one skill at a time</h2>
+  <p style="color:var(--lesson-ink);font-size:14.5px;line-height:1.6">This app is built on your handout's <b>7 skills</b>, and it teaches them <b>in order, one at a time</b>:<br><br>📖 Each skill gets a short lesson — what it is, why it works, an example.<br>🎯 Then one small practice mission on a real worry of yours.<br>✅ Finish it, and the next skill unlocks.<br><br>The Worry Window is Skill 6, near the end, kept light — exactly like your therapist asked. Start at Skill 1 and the path does the rest. There's no wrong way to use this.</p>
+  <div class="row"><button class="btn primary" style="flex:1" onclick="CFG.hi=true;saveCfg();UI.welcome=false;render()">Start Skill 1 🌀</button></div>
+  </div></div>`;
+}
 
 applyTheme();
 render();
